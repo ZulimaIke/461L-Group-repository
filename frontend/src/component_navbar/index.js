@@ -1,6 +1,8 @@
 import React from 'react';
+import './NavbarElements.css';
 import {
 NavigationContainer,
+NavigationLogo,
 NavigationLink,
 Buffer,
 NavigationMenu,
@@ -14,17 +16,18 @@ const Navbar = () => {
 return (
 	<>
 	<NavigationContainer>
-		<Buffer />
-
+		{/* <Buffer /> */}
+		<NavigationLogo>ⒿⒶⓏⓏ____ ____ⒻⒾⓈⒽ</NavigationLogo>
 		<NavigationMenu>
 		<NavigationLink to='/' activeStyle>
 			Home
 		</NavigationLink>
-		<NavigationLink to='/about' activeStyle>
+		<NavigationLink to='/about' activeStyle >
+			{/* <link>About</link> */}
 			About
 		</NavigationLink>
 		<NavigationLink to='/images' activeStyle>
-			Images
+			Stuff
 		</NavigationLink>
  		</NavigationMenu>
 		<NavigationButton>
