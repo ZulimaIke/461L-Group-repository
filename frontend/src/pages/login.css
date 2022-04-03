@@ -1,0 +1,22 @@
+@media all and (min-width: 480px) {
+    .Login {
+      /* padding: 250px 100px; */
+      align: center;
+    }
+
+    body {
+        background-color: pink;
+    }
+
+    .Login form {
+        margin-top: 10%;
+        margin-bottom: 25%;
+        margin-left: 25%;
+        margin-right: 25%;
+        float: none;
+        padding: 300px;
+        background-color: #0EAAB0;
+
+    }
+
+  }
