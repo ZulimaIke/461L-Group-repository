@@ -26,7 +26,7 @@ return (
 			{/* <link>About</link> */}
 			About
 		</NavigationLink>
-		<NavigationLink to='/images' activeStyle>
+		<NavigationLink to='/Stuff' activeStyle>
 			Stuff
 		</NavigationLink>
  		</NavigationMenu>
