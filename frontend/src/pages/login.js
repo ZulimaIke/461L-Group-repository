@@ -7,13 +7,13 @@ import { Link } from "react-router-dom";
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loginSuccess, setLoginSuccess] = useState("");
 
   function validateForm() {
     return username.length > 0 && password.length > 0;
   }
 
   function handleSubmit(event) {
-    console.log("hi");
     event.preventDefault();
   }
 
@@ -38,7 +38,21 @@ export default function Login() {
             onChange={(e) => setPassword(e.target.value)}
           />
         </Form.Group>
-        <Button block size="lg" type="submit" disabled={!validateForm()}>
+        <Button block size="lg" type="submit" disabled={!validateForm()}
+         onClick={() => {
+                    fetch("http://127.0.0.1:5000/login/" + username + "_" + password)
+                        .then(response => 
+                            response.json()
+                        )
+                        .then(data => {
+                            setLoginSuccess(data.loginSuccess)
+			    console.log(loginSuccess)
+                        })
+                        .catch(error => {
+                            console.log(error)
+                        })
+                        }}
+        >
           Login
         </Button>
       </Form>

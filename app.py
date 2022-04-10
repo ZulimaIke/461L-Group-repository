@@ -37,6 +37,32 @@ def create_acc(userAndPass: str):
         output = "false"
         return jsonify(createdAcc=output)
 
+@app.route("/login/<userAndPass>", methods=["GET"])
+def login(userAndPass: str):
+    separated = userAndPass.split('_')
+    username = separated[0]
+    password = separated[1]
+    username = username.lower()
+    password = password.lower()
+
+    Client=MongoClient("mongodb+srv://josephhuynh:Jh032001@cluster0.rtq6j.mongodb.net/HWSet?retryWrites=true&w=majority")
+    db = Client.Cluster0
+    UserAndPass = db.UserAndPass
+    search = UserAndPass.find_one({
+        "$and": [
+            {"Username": username},
+            {"Password": password}
+        ]
+    })
+    if search is None:
+        Client.close()
+        output = "false"
+        return jsonify(loginSuccess=output)
+    else:
+        Client.close()
+        output = "true"
+        return jsonify(loginSuccess=output)
+
 @app.route("/")
 def index():
     return send_from_directory(app.static_folder, "index.html")
