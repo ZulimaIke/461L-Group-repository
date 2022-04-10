@@ -13,6 +13,7 @@ export default function Login() {
   }
 
   function handleSubmit(event) {
+    console.log("hi");
     event.preventDefault();
   }
 

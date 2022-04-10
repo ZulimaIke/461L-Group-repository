@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 export default function CreateAcc() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [createdAcc, setCreatedAcc] = useState("");
 
   function validateForm() {
     return username.length > 0 && password.length > 0;
@@ -37,7 +38,21 @@ export default function CreateAcc() {
             onChange={(e) => setPassword(e.target.value)}
           />
         </Form.Group>
-        <Button block size="lg" type="submit" disabled={!validateForm()}>
+        <Button block size="lg" type="submit" disabled={!validateForm()}
+         onClick={() => {
+                    fetch("http://127.0.0.1:5000/create_acc/" + username + "_" + password)
+                        .then(response => 
+                            response.json()
+                        )
+                        .then(data => {
+                            setCreatedAcc(data.createdAcc)
+			    console.log(createdAcc)
+                        })
+                        .catch(error => {
+                            console.log(error)
+                        })
+                        }}
+        >
           Login
         </Button>
       </Form>
