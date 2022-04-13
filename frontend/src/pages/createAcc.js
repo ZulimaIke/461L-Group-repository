@@ -53,7 +53,7 @@ export default function CreateAcc() {
                         })
                         }}
         >
-          Login
+          Create Account
         </Button>
       </Form>
     </div>
