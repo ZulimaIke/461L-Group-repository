@@ -5,6 +5,7 @@ import Home from './pages';
 import About from './pages/about';
 import Login from './pages/login';
 import CreateAcc from './pages/createAcc';
+import PostLogin from './pages/postLogin';
 import Navbar from './component_navbar/index';
 
 
@@ -18,6 +19,7 @@ return (
       <Route path='/about' element={<About />} />
       <Route path='/CreateAcc' element={<CreateAcc />} />
       <Route path='/login' element={<Login />} />
+      <Route path='/postLogin' element={<PostLogin />} />
     </Routes>
 	</Router>
 );
