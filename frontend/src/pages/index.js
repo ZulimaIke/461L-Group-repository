@@ -20,6 +20,8 @@ return (
 	<li>
 		<Link to = "/login">Sign into existing account</Link>
 	</li>
+
+	<img className = "image1" src='jazz.jpg' width="500" height = "600"/>
 	</div>
 );
 };
