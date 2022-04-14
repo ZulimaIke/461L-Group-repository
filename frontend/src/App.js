@@ -6,6 +6,8 @@ import About from './pages/about';
 import Login from './pages/login';
 import CreateAcc from './pages/createAcc';
 import PostLogin from './pages/postLogin';
+import NewProject from './pages/newProject';
+import ManageProject from './pages/manageProject';
 import Navbar from './component_navbar/index';
 
 
@@ -20,6 +22,9 @@ return (
       <Route path='/CreateAcc' element={<CreateAcc />} />
       <Route path='/login' element={<Login />} />
       <Route path='/postLogin' element={<PostLogin />} />
+      <Route path='/newProject' element={<NewProject />} />
+      <Route path='/manageProject' element={<ManageProject />} />
+
     </Routes>
 	</Router>
 );

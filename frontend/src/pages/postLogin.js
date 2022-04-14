@@ -16,10 +16,13 @@ function PostLogin() {
     <div>
       <h1>Welcome User : __(Fill in)__</h1>
       <li>
-      <Link to = "/about">Create new project</Link>
+      <Link to = "/newProject">Create new project</Link>
       </li>
       <li>
       <Link to = "/about">Manage existing project</Link>
+      </li>
+      <li>
+      <Link to = "/">Logout</Link>
       </li>
     </div>
 

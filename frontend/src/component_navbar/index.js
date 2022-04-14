@@ -27,7 +27,7 @@ return (
 			About
 		</NavigationLink>
 		<NavigationLink to='/postLogin' activeStyle>
-			Stuff
+			Post login
 		</NavigationLink>
  		</NavigationMenu>
 		<NavigationButton>
