@@ -7,7 +7,7 @@ import './manageProject.css';
 export const ManageProject = () => {
 
     const columns = useMemo(() => Columns, [])
-    //const data = useMemo(() => user_data, [])
+    const data = useMemo(() => user_data, [])
 
     const tableInstance = useTable({
         columns: columns,
@@ -54,3 +54,5 @@ export const ManageProject = () => {
     )
 
 }
+
+export default ManageProject;
