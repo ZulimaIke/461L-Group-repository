@@ -55,6 +55,10 @@ export default function Login() {
         >
           Login
         </Button>
+
+        <li>
+          <Link to = "/">Back</Link>
+        </li>
       </Form>
     </div>
   );

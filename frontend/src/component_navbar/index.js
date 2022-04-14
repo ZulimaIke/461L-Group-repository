@@ -30,12 +30,12 @@ return (
 			Post login
 		</NavigationLink>
  		</NavigationMenu>
-		<NavigationButton>
+		{/* <NavigationButton>
 		<ButtonPress to='/login'>Sign in</ButtonPress>
 		</NavigationButton>
         <NavigationButton>
 		<ButtonPress to='/createAcc'>Create account</ButtonPress>
-		</NavigationButton>
+		</NavigationButton> */}
 	</NavigationContainer>
 	</>
 );

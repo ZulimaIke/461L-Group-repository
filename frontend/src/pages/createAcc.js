@@ -55,6 +55,9 @@ export default function CreateAcc() {
         >
           Create Account
         </Button>
+        <li>
+          <Link to = "/">Back</Link>
+        </li>
       </Form>
     </div>
   );
