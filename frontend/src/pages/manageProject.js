@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React, {useMemo, useState, useEffect } from 'react';
 import {useTable} from 'react-table';
 //import user_data file
 import { Columns } from './columns';
@@ -6,12 +6,13 @@ import './manageProject.css';
 
 export const ManageProject = () => {
 
+    const [user_data, setData] = useState([]);
     const columns = useMemo(() => Columns, [])
-    const data = useMemo(() => user_data, [])
+    //const data = useMemo(() => user_data, [])
 
     const tableInstance = useTable({
         columns: columns,
-        data: data
+        data: user_data
     })
 
     const {
@@ -21,6 +22,19 @@ export const ManageProject = () => {
         rows,
         prepareRow 
     } = tableInstance
+
+    useEffect(() => {
+      fetch("http://127.0.0.1:5000/getProjects/")
+                        .then(response => 
+                            response.json()
+                        )
+                        .then(data => {
+                            setData(JSON.parse(data.user_data))
+                        })
+                        .catch(error => {
+                            console.log(error)
+                        })
+                        })
 
     return (
         <table {... getTableProps}>

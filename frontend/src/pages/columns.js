@@ -5,14 +5,14 @@
 export const Columns = [
     {
         Header: 'Name',
-        accessor: ''
+        accessor: 'Name'
     },
     {
-        Header: 'Data',
-        accessor: ''
+        Header: 'ID',
+        accessor: 'ID'
     },
     {
         Header: 'Other Data',
-        accessor: ''
+        accessor: 'Description'
     }
 ]
