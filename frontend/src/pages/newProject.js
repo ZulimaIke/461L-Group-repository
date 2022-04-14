@@ -10,6 +10,7 @@ export default function NewProject() {
   const [projectName, setProjectName] = useState("");
   const [projectID, setProjectID] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
+  const [successfullyCreated, setSuccessfullyCreated] = useState("");
 
   function validateForm() {
     return projectName.length > 0 && projectID.length > 0 && projectDescription.length > 0;
@@ -49,7 +50,19 @@ export default function NewProject() {
           />
         </Form.Group>
         <Button block size="lg" type="submit" disabled={!validateForm()}
-         
+         onClick={() => {
+                    fetch("http://127.0.0.1:5000/newProject/" + projectName + "_" + projectID + "_" + projectDescription)
+                        .then(response => 
+                            response.json()
+                        )
+                        .then(data => {
+                            setSuccessfullyCreated(data.successfullyCreated)
+			    console.log(successfullyCreated)
+                        })
+                        .catch(error => {
+                            console.log(error)
+                        })
+                        }}         
         >
           Create project
         </Button>

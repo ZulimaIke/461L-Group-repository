@@ -63,6 +63,32 @@ def login(userAndPass: str):
         output = "true"
         return jsonify(loginSuccess=output)
 
+    
+@app.route("/newProject/<projectInfo>", methods=["GET"])
+def newProject(projectInfo: str):
+    separated = projectInfo.split('_')
+    projectName = separated[0]
+    projectID = separated[1]
+    projectDescription = separated[2]
+
+    Client=MongoClient("mongodb+srv://josephhuynh:Jh032001@cluster0.rtq6j.mongodb.net/HWSet?retryWrites=true&w=majority")
+    db = Client.Cluster0
+    Projects = db.Projects
+    search = Projects.find_one({"ID": projectID})
+    if search is None:
+        newProject = {
+        "Name" : projectName,
+        "ID" : projectID,
+        "Description" : projectDescription}
+        Projects.insert_one(newProject)
+        Client.close()
+        output = "true"
+        return jsonify(successfullyCreated=output)
+    else:
+        Client.close()
+        output = "false"
+        return jsonify(successfullyCreated=output)
+    
 @app.route("/")
 def index():
     return send_from_directory(app.static_folder, "index.html")
