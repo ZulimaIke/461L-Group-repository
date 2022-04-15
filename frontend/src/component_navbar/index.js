@@ -30,6 +30,9 @@ return (
 			Post login
 		</NavigationLink>
  		</NavigationMenu>
+		 <NavigationButton>
+		<ButtonPress to='/logout'>Logout</ButtonPress>
+		</NavigationButton>
 		{/* <NavigationButton>
 		<ButtonPress to='/login'>Sign in</ButtonPress>
 		</NavigationButton>
