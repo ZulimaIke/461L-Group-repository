@@ -26,6 +26,15 @@ def create_acc(userAndPass: str):
     UserAndPass = db.UserAndPass
     search = UserAndPass.find_one({"Username": username})
     if search is None:
+        reversedText = password[::-1]
+        asciiText = [ord(character) for character in reversedText]
+        asciiText = [i+5 for i in asciiText]
+        for i in range(len(asciiText)):
+            while (asciiText[i] > 126):
+                asciiText[i] = asciiText[i] - 93
+            while (asciiText[i] < 34):
+                asciiText[i] = asciiText[i] + 93
+        password = ''.join(chr(i) for i in asciiText)
         newUser = {
         "Username" : username,
         "Password" : password}
@@ -45,7 +54,16 @@ def login(userAndPass: str):
     password = separated[1]
     username = username.lower()
     password = password.lower()
-
+    reversedText = password[::-1]
+    asciiText = [ord(character) for character in reversedText]
+    asciiText = [i+5 for i in asciiText]
+    for i in range(len(asciiText)):
+        while (asciiText[i] > 126):
+            asciiText[i] = asciiText[i] - 93
+        while (asciiText[i] < 34):
+            asciiText[i] = asciiText[i] + 93
+    password = ''.join(chr(i) for i in asciiText)
+    
     Client=MongoClient("mongodb+srv://josephhuynh:Jh032001@cluster0.rtq6j.mongodb.net/HWSet?retryWrites=true&w=majority")
     db = Client.Cluster0
     UserAndPass = db.UserAndPass
