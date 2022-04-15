@@ -1,6 +1,7 @@
 from flask import Flask, jsonify
 from flask.helpers import send_from_directory
 from pymongo import MongoClient
+from bson.json_util import dumps
 import ssl
 
 # comment out on deployment
@@ -88,6 +89,17 @@ def newProject(projectInfo: str):
         Client.close()
         output = "false"
         return jsonify(successfullyCreated=output)
+
+@app.route("/getProjects/", methods=["GET"])
+def getProjects():
+    Client=MongoClient("mongodb+srv://josephhuynh:Jh032001@cluster0.rtq6j.mongodb.net/HWSet?retryWrites=true&w=majority")
+    db = Client.Cluster0
+    Projects = db.Projects
+    cursor = Projects.find({})
+    list_cur = list(cursor)
+    output = dumps(list_cur)
+    Client.close()
+    return jsonify(user_data=output)
     
 @app.route("/")
 def index():
