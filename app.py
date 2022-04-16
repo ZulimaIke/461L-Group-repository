@@ -132,7 +132,7 @@ def newProject(projectInfo: str):
     setName = separated[0]
     key = separated[1]
 
-    Client=MongoClient("mongodb+srv://josephhuynh:Jh032001@cluster0.rtq6j.mongodb.net/HWSet?retryWrites=true&w=majority")
+    Client = MongoClient("mongodb+srv://josephhuynh:Jh032001@cluster0.rtq6j.mongodb.net/HWSet?retryWrites=true&w=majority")
     db = Client.Cluster0
     HWSets = db.HWSets
     search = HWSets.find_one({"Name": setName})
