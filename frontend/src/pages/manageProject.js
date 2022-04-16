@@ -4,6 +4,8 @@ import {useTable} from 'react-table';
 import { Columns } from './columns';
 import './manageProject.css';
 import {DropdownButton, Dropdown} from 'react-bootstrap';
+import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+
 
 export const ManageProject = () => {
 
@@ -67,12 +69,17 @@ export const ManageProject = () => {
                 })}                
             </tbody>
         </table>
-        <DropdownButton id="dropdown-item-button" title="Select project :">
-        <Dropdown.ItemText>Select project</Dropdown.ItemText>
-        <Dropdown.Item as="button">Item1</Dropdown.Item>
-        <Dropdown.Item as="button">Item2</Dropdown.Item>
-        <Dropdown.Item as="button">Item3</Dropdown.Item>
-        </DropdownButton>
+        <FormControl fullWidth>
+            <InputLabel id="project-stack">Project Selection</InputLabel>
+            <Select
+                labelId="project-stack"
+                id="project-select"
+                >
+                    <MenuItem>Project 1</MenuItem>
+                    <MenuItem>Project 2</MenuItem>
+                    <MenuItem>Project 3</MenuItem>
+            </Select>
+        </FormControl>
         </div>
         
     )
