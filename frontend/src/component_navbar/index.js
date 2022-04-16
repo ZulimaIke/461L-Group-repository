@@ -24,7 +24,7 @@ return (
 		</NavigationLink>
 		<NavigationLink to='/about' activeStyle >
 			{/* <link>About</link> */}
-			About
+			Hardware Checkout
 		</NavigationLink>
 		<NavigationLink to='/postLogin' activeStyle>
 			Post login
