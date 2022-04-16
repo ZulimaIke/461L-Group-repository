@@ -3,6 +3,7 @@ import {useTable} from 'react-table';
 //import user_data file
 import { Columns } from './columns';
 import './manageProject.css';
+import {DropdownButton, Dropdown} from 'react-bootstrap';
 
 export const ManageProject = () => {
 
@@ -37,6 +38,7 @@ export const ManageProject = () => {
                         })
 
     return (
+        <div>
         <table {... getTableProps}>
             <thead>
                 {
@@ -65,6 +67,14 @@ export const ManageProject = () => {
                 })}                
             </tbody>
         </table>
+        <DropdownButton id="dropdown-item-button" title="Select project :">
+        <Dropdown.ItemText>Select project</Dropdown.ItemText>
+        <Dropdown.Item as="button">Item1</Dropdown.Item>
+        <Dropdown.Item as="button">Item2</Dropdown.Item>
+        <Dropdown.Item as="button">Item3</Dropdown.Item>
+        </DropdownButton>
+        </div>
+        
     )
 
 }
