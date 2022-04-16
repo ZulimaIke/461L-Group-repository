@@ -3,6 +3,7 @@ from flask.helpers import send_from_directory
 from pymongo import MongoClient
 from bson.json_util import dumps
 import ssl
+import HWSet
 
 # comment out on deployment
 from flask_cors import CORS
@@ -81,8 +82,7 @@ def login(userAndPass: str):
         Client.close()
         output = "true"
         return jsonify(loginSuccess=output)
-
-    
+   
 @app.route("/newProject/<projectInfo>", methods=["GET"])
 def newProject(projectInfo: str):
     separated = projectInfo.split('_')
@@ -118,6 +118,69 @@ def getProjects():
     output = dumps(list_cur)
     Client.close()
     return jsonify(user_data=output)
+
+# HWSets
+@app.route("/HWSets/<setInfo>", methods=["GET"])
+# return statement in form of <whether successfull>_<HWSet capacity>_<HWSet availability>
+# <setInfo> either in form:
+#   to just retrieve data about availability and capacity: 
+#       <setName (either HWSet1 or 2)>_data
+#   to either checkin or checkout:
+#       <setName (either HWSet1 or 2)>_<key: either checkin, checkout>_<ProjectID>_<qty>
+def newProject(projectInfo: str):
+    separated = projectInfo.split('_')
+    setName = separated[0]
+    key = separated[1]
+
+    Client=MongoClient("mongodb+srv://josephhuynh:Jh032001@cluster0.rtq6j.mongodb.net/HWSet?retryWrites=true&w=majority")
+    db = Client.Cluster0
+    HWSets = db.HWSets
+    search = HWSets.find_one({"Name": setName})
+    
+    #The HWSet (either HWSet 1 or 2 hasn't been created yet)
+    if search is None:
+        hwSet0 = HWSet.HWSet()
+        newSet = {
+            "Name" : setName,
+            "HWSet" : hwSet0}
+
+        HWSets.insert_one(newSet)
+        Client.close()
+        data = "true" + str(hwSet0.get_capacity()) + "_" + str(hwSet0.get_availability())
+        return jsonify(HWSetData=data)
+
+    else:
+        #get HWSet object
+        hwSet0 = search["HWSet"]
+
+        # just getting capacity and availability
+        if key == "data":
+            Client.close()
+            data = str(hwSet0.get_capacity()) + "_" + str(hwSet0.get_availability())
+            return jsonify(HWSetData=data)
+
+        else:
+            projectID = separated[2]
+            qty = separated[3]
+            success = 0
+
+            if key == "checkout":
+                success = hwSet0.check_out(projectID, qty)
+            if key == "checkin":
+                success = hwSet0.check_out(projectID, qty)
+
+            # if checkin or checkout successful    
+            if success == 0:
+                HWSets.update_one(
+                    {"Name": setName},
+                    {'$set' : { 'HWSet' : hwSet0 }})
+                Client.close()
+                data = "true" + str(hwSet0.get_capacity()) + "_" + str(hwSet0.get_availability())
+                return jsonify(HWSetData=data)
+            else:
+                Client.close()
+                data = "false" + str(hwSet0.get_capacity()) + "_" + str(hwSet0.get_availability())
+                return jsonify(HWSetData=data)  
     
 @app.route("/")
 def index():

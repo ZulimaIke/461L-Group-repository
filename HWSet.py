@@ -5,8 +5,7 @@ class HWSet:
     def __init__(self):
         self.__availability = 200
         self.__capacity = 200
-        self.__checkOutQty = []
-        self.__checkOutId = -1
+        self.__checkOutQty = {}
 
     # Getter methods for availability and capacity variables
     def get_availability(self):
@@ -16,7 +15,7 @@ class HWSet:
         return self.__capacity
 
     # Methods for check out and check in
-    def check_out(self, qty):
+    def check_out(self, id, qty):
         # If there's not enough available return error
         if qty > self.__availability:
             return -1
@@ -24,19 +23,24 @@ class HWSet:
         # Decrement availability by quantity
         self.__availability -= qty
 
-        # Increment checkout id
-        self.__checkOutId += 1
-        # Set the value in the list to the quantity
-        self.__checkOutQty.append(qty)
-        return self.__checkOutId
+        # Add to CheckOut dictionary
+        if id in self.__checkOutQty:
+            self.__checkOutQty[id] += qty
+        else:
+            self.__checkOutQty[id] = qty
+
+        return 0
 
     def check_in(self, id, qty):
         # Checks if the idx is valid
-        if id < len(self.__checkOutQty) and id > -1:
+        if id in self.__checkOutQty:
             # Checks id qty greater than or equal to the value in the list
             if qty <= self.__checkOutQty[id]:
-            # Increments availability by quantity
+                # Increments availability by quantity
                 self.__availability += qty
+                # Decrement amount checked out
+                self.__checkOutQty[id] -= qty
+                
                 return 0
             else:
             # Returns error
