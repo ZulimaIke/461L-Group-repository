@@ -25,7 +25,7 @@ const HardwareCheckout = () => {
         console.log(dataInput);
         fetch('http://localhost:5000/hwSet/' + dataInput)
         .then(res => res.json())
-        .then(data => console.log(data)
+        .then(data => console.log(data.hwsetdata)
         );
     }
 	
