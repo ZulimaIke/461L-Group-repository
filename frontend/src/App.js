@@ -8,6 +8,7 @@ import CreateAcc from './pages/createAcc';
 import PostLogin from './pages/postLogin';
 import NewProject from './pages/newProject';
 import ManageProject from './pages/manageProject.js';
+import DataAccess from './pages/dataAccess.js';
 import Logout from './pages/logout'
 import Navbar from './component_navbar/index';
 
@@ -25,6 +26,7 @@ return (
       <Route path='/postLogin' element={<PostLogin />} />
       <Route path='/newProject' element={<NewProject />} />
       <Route path='/manageProject' element={<ManageProject />} />
+      <Route path='/dataAccess' element={<DataAccess />} />      
       <Route path='/logout' element={<Logout />} />
 
     </Routes>

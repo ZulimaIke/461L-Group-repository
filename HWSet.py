@@ -2,17 +2,20 @@
 class HWSet:
 
     # Initialize private attributes
-    def __init__(self):
-        self.__availability = 200
-        self.__capacity = 200
-        self.__checkOutQty = {}
+    def __init__(self, availability, capacity, checkOutqty):
+        self.__availability = availability
+        self.__capacity = capacity
+        self.__checkOutQty = checkOutqty
 
-    # Getter methods for availability and capacity variables
+    # Getter methods for availability, capacity, and checkOutQty variables
     def get_availability(self):
         return self.__availability
 
     def get_capacity(self):
         return self.__capacity
+
+    def get_checkOutQty(self):
+        return self.__checkOutQty
 
     # Methods for check out and check in
     def check_out(self, id, qty):
