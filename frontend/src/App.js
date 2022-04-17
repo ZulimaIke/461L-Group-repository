@@ -11,6 +11,7 @@ import ManageProject from './pages/manageProject.js';
 import DataAccess from './pages/dataAccess.js';
 import Logout from './pages/logout'
 import Navbar from './component_navbar/index';
+import DisplayHWSets from './pages/DisplayHWSets';
 
 
 //Routing containing paths to directory containing pages and corresponding elements
@@ -28,6 +29,7 @@ return (
       <Route path='/manageProject' element={<ManageProject />} />
       <Route path='/dataAccess' element={<DataAccess />} />      
       <Route path='/logout' element={<Logout />} />
+      <Route path= '/HWSets' element={<DisplayHWSets />} />
 
     </Routes>
 	</Router>
