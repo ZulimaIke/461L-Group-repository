@@ -49,8 +49,9 @@ def createHWSet(setData: str):
         "Capacity": data[1],
         "Availability": data[1]
     }
+    hwSet0 = entry["Hardware"] + "_" + entry["Capacity"] + "_" + entry["Availability"]
     hwSets.insert_one(entry)
-    return jsonify(entry)
+    return jsonify(hwsetdata = hwSet0)
   
 @app.route('/')
 def index():
