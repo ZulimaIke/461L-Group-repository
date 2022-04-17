@@ -17,6 +17,26 @@ mongoPass = "T32bfrH0L678xseI"
 c = MongoClient(f"mongodb+srv://2team:{mongoPass}@finalproject.njqba.mongodb.net/FinalProject?retryWrites=true&w=majority") 
 db = c.FinalProject
 
+@app.route('/user/createAcc', methods = ["POST"])
+def createAcc():
+    requestData = json.loads(request.data)
+    payload = requestData['data']
+
+    username = payload['username']
+    password = payload['password']
+
+    user = Users(username, password)
+
+    collection = c.FinalProject.Users
+
+    try:
+        user_id = c.FinalProject.insert_one(user.toDatabase()).inserted_id
+    except Exception as e:
+        print(e, flush = True)
+        return;
+    else:
+        return;
+        
 @app.route('/hwSet/<setData>', methods=['GET', 'POST'])
 def createHWSet(setData: str):
     return {'response':'Hi'}
