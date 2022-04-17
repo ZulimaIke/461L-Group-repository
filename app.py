@@ -48,8 +48,10 @@ def createHWSet(setData: str):
     entry = {
         "Hardware": data[0],
         "Capacity": data[1],
-        "Availability": data[1]
+        "Availability": data[1],
+        "checkouts": {}
     }
+    Client.close()
     hwSet0 = entry["Hardware"] + "_" + entry["Capacity"] + "_" + entry["Availability"]
     hwSets.insert_one(entry)
     return jsonify(hwsetdata = hwSet0)
