@@ -40,22 +40,63 @@ def createAcc():
 
 @app.route('/hwSet/<setData>', methods=['GET', 'POST'])
 def createHWSet(setData: str):
-    #return {'response':'Hi'}
     Client = MongoClient("mongodb+srv://2team:T32bfrH0L678xseI@finalproject.njqba.mongodb.net/FinalProject?retryWrites=true&w=majority")
     db = Client.FinalProject
-    hwSets = db.HWSets
+    HWSets = db.HWSets
     data = setData.split("_")
     entry = {
-        "Hardware": data[0],
+        "Name": data[0],
         "Capacity": data[1],
         "Availability": data[1],
-        "checkouts": {}
+        "Checkouts": {}
     }
     Client.close()
-    hwSet0 = entry["Hardware"] + "_" + entry["Capacity"] + "_" + entry["Availability"]
-    hwSets.insert_one(entry)
-    return jsonify(hwsetdata = hwSet0)
-  
+    HWSet0 = entry["Hardware"] + "_" + entry["Capacity"] + "_" + entry["Availability"]
+    HWSets.insert_one(entry)
+    return jsonify(hwsetdata = HWSet0)
+
+#hardwareset checkin or checkout
+@app.route("/checkInOrOut/<setInfo>", methods=["GET"])
+# return statement in form of <whether successfull>_<HWSet capacity>_<HWSet availability>
+# <setInfo> in form:
+# <setName (either HWSet1 or 2)>_<key: either checkin, checkout>_<ProjectID>_<qty>
+def checkInOrOut(setInfo: str):
+    separated = setInfo.split('_')
+    setName = separated[0]
+    key = separated[1]
+    projectID = separated[2]
+    qty = separated[3]
+    success = 0
+
+    Client = MongoClient("mongodb+srv://2team:T32bfrH0L678xseI@finalproject.njqba.mongodb.net/FinalProject?retryWrites=true&w=majority")
+    db = Client.FinalProject
+    HWSets = db.HWSets
+    search = HWSets.find_one({"Name": setName})
+
+    #create HWSet object
+    HWSet0 = HWSet.HWSet(int(search["Availability"]), int(search["Capacity"]), search["Ckeckouts"])
+
+    if key == "checkout":
+        success = HWSet0.check_out(projectID, qty)
+    if key == "checkin":
+        success = HWSet0.check_in(projectID, qty)
+
+    # if checkin or checkout successful    
+    if success == 0:
+        HWSets.update_one(
+            {"Name": setName},
+            {'$set' : {
+                "Capacity": HWSet0.get_capacity(),
+                "Availability": HWSet0.get_availability(),
+                "Checkouts": HWSet0.get_checkOutQty() }})
+        Client.close()
+        data = "true" + str(HWSet0.get_capacity()) + "_" + str(HWSet0.get_availability())
+        return jsonify(HWSetData=data)
+    else:
+        Client.close()
+        data = "false" + str(HWSet0.get_capacity()) + "_" + str(HWSet0.get_availability())
+        return jsonify(HWSetData=data)   
+
 @app.route('/')
 def index():
     return app.send_static_file('index.html')
