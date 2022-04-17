@@ -47,7 +47,7 @@ const HardwareCheckout = () => {
 	
     return (
         <div align= "center" className='Login'>       
-        <Link to="/DisplayHWSets"><Button type="button">
+        <Link to="/HWSets"><Button type="button">
             See Existing Sets
         </Button> 
         </Link>  
