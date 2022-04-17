@@ -13,6 +13,9 @@ app = Flask(__name__, static_folder="frontend/build", static_url_path="/")
 
 # comment out on deployment
 CORS(app)
+mongoPass = "T32bfrH0L678xseI"
+c = MongoClient(f"mongodb+srv://2team:{mongoPass}@finalproject.njqba.mongodb.net/FinalProject?retryWrites=true&w=majority") 
+db = c.FinalProject
 
 @app.route('/hwSet/<setData>', methods=['GET', 'POST'])
 def createHWSet(setData: str):
