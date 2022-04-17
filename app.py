@@ -3,9 +3,9 @@ from flask.helpers import send_from_directory
 from pymongo import MongoClient
 from bson.json_util import dumps
 import json
+from bson import json_util
 import ssl
 import HWSet
-from User import User
 # comment out on deployment
 from flask_cors import CORS
 
@@ -41,18 +41,32 @@ def createAcc():
 @app.route('/hwSet/<setData>', methods=['GET', 'POST'])
 def createHWSet(setData: str):
     #return {'response':'Hi'}
-    Client = MongoClient("mongodb+srv://2team:T32bfrH0L678xseI@finalproject.njqba.mongodb.net/FinalProject?retryWrites=true&w=majority")
-    db = Client.FinalProject
-    hwSets = Client.HWSets
+    # Client = MongoClient("mongodb+srv://2team:T32bfrH0L678xseI@finalproject.njqba.mongodb.net/FinalProject?retryWrites=true&w=majority")
+    # db = Client.FinalProject
+    hwSets = db.HWSets
     data = setData.split("_")
     entry = {
         "Hardware": data[0],
         "Capacity": data[1],
         "Availability": data[1]
     }
-    hwSet0 = entry["Hardware"] + "_" + entry["Capacity"] + "_" + entry["Availability"]
+    # hwSet0 = entry["Hardware"] + "_" + entry["Capacity"] + "_" + entry["Availability"]
     hwSets.insert_one(entry)
-    return jsonify(hwsetdata = hwSet0)
+    return {'response':'success'}
+
+@app.route('/getSets', methods=['POST', 'GET'])
+def getHWSets():
+    # return {'response':'Hi'}
+    Client = MongoClient("mongodb+srv://2team:T32bfrH0L678xseI@finalproject.njqba.mongodb.net/FinalProject?retryWrites=true&w=majority")
+    db = Client.FinalProject
+    hwSets = db.HWSets
+    existingSets = []
+    pointer = hwSets.find({})
+    for set in pointer:
+        print(set)
+        page = json.loads(json_util.dumps(set))
+        existingSets.append(page)
+    return jsonify(existingSets)
   
 @app.route('/')
 def index():
