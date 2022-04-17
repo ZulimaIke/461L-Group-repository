@@ -1,10 +1,11 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask.helpers import send_from_directory
 from pymongo import MongoClient
 from bson.json_util import dumps
+import json
 import ssl
 import HWSet
-
+from User import User
 # comment out on deployment
 from flask_cors import CORS
 
@@ -25,7 +26,7 @@ def createAcc():
     username = payload['username']
     password = payload['password']
 
-    user = Users(username, password)
+    user = User(username, password)
 
     collection = c.FinalProject.Users
 
@@ -36,7 +37,7 @@ def createAcc():
         return;
     else:
         return;
-        
+
 @app.route('/hwSet/<setData>', methods=['GET', 'POST'])
 def createHWSet(setData: str):
     #return {'response':'Hi'}
