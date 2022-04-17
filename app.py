@@ -34,9 +34,9 @@ def createAcc():
         user_id = c.FinalProject.insert_one(user.toDatabase()).inserted_id
     except Exception as e:
         print(e, flush = True)
-        return;
+        return
     else:
-        return;
+        return
 
 @app.route('/hwSet/<setData>', methods=['GET', 'POST'])
 def createHWSet(setData: str):
