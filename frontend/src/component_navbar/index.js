@@ -29,7 +29,10 @@ return (
 		<NavigationLink to='/postLogin' activeStyle>
 			Project Management
 		</NavigationLink>
- 		</NavigationMenu>
+		<NavigationLink to='/dataAccess' activeStyle>
+			Data Access
+		</NavigationLink> 		
+		</NavigationMenu>
 		 <NavigationButton>
 		<ButtonPress to='/logout'>Logout</ButtonPress>
 		</NavigationButton>
