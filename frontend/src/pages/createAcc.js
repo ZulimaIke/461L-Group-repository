@@ -14,28 +14,32 @@ export default function CreateAcc() {
   }
 
   function handleSubmit(event) {
-    createFail(false);
-    if(!username){
-      createFail(true);
-      setFailMessage("Please enter a valid username");
-      return;
-    } 
+    event.preventDefault();
+  }
+
+  // function handleSubmit(event) {
+  //   createFail(false);
+  //   if(!username){
+  //     createFail(true);
+  //     setFailMessage("Please enter a valid username");
+  //     return;
+  //   } 
 
     //axios.post("/user/createAcc", {
-    axios.post("http://localhost:5000/user/createAcc/", {
-      data:{
-        username: username,
-        password: password,
-      },
-    })
-    .then(function (response) {
-      console.log(response);
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
+  //   axios.post("http://localhost:5000/user/createAcc/", {
+  //     data:{
+  //       username: username,
+  //       password: password,
+  //     },
+  //   })
+  //   .then(function (response) {
+  //     console.log(response);
+  //   })
+  //   .catch(function (error) {
+  //     console.log(error);
+  //   });
     
-  };
+  // };
 
   return (
     <div align="center" className="Login">
@@ -77,6 +81,9 @@ export default function CreateAcc() {
         </Button>
         <li>
           <Link to = "/">Back</Link>
+        </li>
+        <li>
+          <Link to = "/login">Login to existing account</Link>
         </li>
       </Form>
     </div>

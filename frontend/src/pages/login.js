@@ -59,6 +59,9 @@ export default function Login() {
         <li>
           <Link to = "/">Back</Link>
         </li>
+        <li>
+          <Link to = "/createAcc">New? Create an account</Link>
+        </li>
       </Form>
     </div>
   );

@@ -19,34 +19,67 @@ mongoPass = "T32bfrH0L678xseI"
 c = MongoClient(f"mongodb+srv://2team:{mongoPass}@finalproject.njqba.mongodb.net/FinalProject?retryWrites=true&w=majority") 
 db = c.FinalProject
 
-@app.route('/user/createAcc', methods = ["POST"])
-def createAcc():
+@app.route("/create_acc/<userAndPass>", methods=["GET"])
+def create_acc(userAndPass: str):
+    separated = userAndPass.split('_')
+    username = separated[0]
+    password = separated[1]
+    username = username.lower()
+    password = password.lower()
+
     collection = db.Users
-    requestData = json.loads(request.data)
-    payload = requestData['data']
+    search = collection.find_one({"Username": username})
+    if search is None:
+        reversedText = password[::-1]
+        asciiText = [ord(character) for character in reversedText]
+        asciiText = [i+5 for i in asciiText]
+        for i in range(len(asciiText)):
+            while (asciiText[i] > 126):
+                asciiText[i] = asciiText[i] - 93
+            while (asciiText[i] < 34):
+                asciiText[i] = asciiText[i] + 93
+        password = ''.join(chr(i) for i in asciiText)
+        newUser = {
+        "Username" : username,
+        "Password" : password}
+        collection.insert_one(newUser)
+        output = "true"
+        return jsonify(createdAcc=output)
+    else:
+        output = "false"
+        return jsonify(createdAcc=output)
 
-    username = payload['username']
-    password = payload['password']
-
-    entry = {
-        "username": username,
-        "password": password
-    }
-    print(username, flush=True)
-    collection.insert_one(entry)
-    return {'response' : 'success'}
-    #user = User(username, password)
-
+@app.route("/login/<userAndPass>", methods=["GET"])
+def login(userAndPass: str):
+    separated = userAndPass.split('_')
+    username = separated[0]
+    password = separated[1]
+    username = username.lower()
+    password = password.lower()
+    reversedText = password[::-1]
+    asciiText = [ord(character) for character in reversedText]
+    asciiText = [i+5 for i in asciiText]
+    for i in range(len(asciiText)):
+        while (asciiText[i] > 126):
+            asciiText[i] = asciiText[i] - 93
+        while (asciiText[i] < 34):
+            asciiText[i] = asciiText[i] + 93
+    password = ''.join(chr(i) for i in asciiText)
     
-    #print(user.dbSend(), flush=True)
-   # try:
-        #user_id = collection.insert_one(user.dbSend()).inserted_id
-    #    collection.insert_one(user.dbSend())
-   # except Exception as e:
-    #    print(e, flush = True)
-      #  return "account wasn't created"
-   # else: 
-     #   return "account was created"
+    
+    collection = db.Users
+    search = collection.find_one({
+        "$and": [
+            {"Username": username},
+            {"Password": password}
+        ]
+    })
+    if search is None:
+        output = "false"
+        return jsonify(loginSuccess=output)
+    else:
+        output = "true"
+        return jsonify(loginSuccess=output)
 
 @app.route('/hwSet/<setData>', methods=['GET', 'POST'])
 def createHWSet(setData: str):
