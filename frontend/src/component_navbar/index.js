@@ -22,12 +22,12 @@ return (
 		<NavigationLink to='/' activeStyle>
 			Home
 		</NavigationLink>
-		<NavigationLink to='/about' activeStyle >
+		<NavigationLink to='/hardwareCheckout' activeStyle >
 			{/* <link>About</link> */}
 			Hardware Checkout
 		</NavigationLink>
 		<NavigationLink to='/postLogin' activeStyle>
-			Post login
+			Project Management
 		</NavigationLink>
  		</NavigationMenu>
 		 <NavigationButton>
