@@ -30,7 +30,8 @@ export default function CreateAcc() {
       return;
     } 
 
-    axios.post("/user/createAcc", {
+    //axios.post("/user/createAcc", {
+    axios.post("http://localhost:5000/user/createAcc/", {
       data:{
         username: username,
         password: password,

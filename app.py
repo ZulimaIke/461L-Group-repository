@@ -28,15 +28,16 @@ def createAcc():
 
     user = User(username, password)
 
-    collection = c.FinalProject.Users
+    collection = db.Users
     print(user.dbSend(), flush=True)
     try:
-        user_id = c.FinalProject.insert_one(user.dbSend()).inserted_id
+        #user_id = collection.insert_one(user.dbSend()).inserted_id
+        collection.insert_one(user.dbSend())
     except Exception as e:
         print(e, flush = True)
-        return
-    else:
-        return
+        return "account wasn't created"
+    else: 
+        return "account was created"
 
 @app.route('/hwSet/<setData>', methods=['GET', 'POST'])
 def createHWSet(setData: str):
