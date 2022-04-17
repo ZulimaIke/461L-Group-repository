@@ -15,3 +15,9 @@ class User:
 
     def setPass(self, password):
         self.__password = password
+
+    def dbSend(self):
+        return{
+            "username": self.__username,
+            "password": self.__password
+        }
