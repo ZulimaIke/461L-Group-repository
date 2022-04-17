@@ -4,23 +4,14 @@ import Button from "react-bootstrap/Button";
 import "./createAcc.css";
 import { Link } from "react-router-dom";
 
-const axios = require("axios").default;
-
-
 export default function CreateAcc() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [createdAcc, setCreatedAcc] = useState("");
-  const [createFail, setCreateFail] = useState(false);
-  const[failMessage, setFailMessage] = useState("");
 
-  const handleUser = (e) => {
-    setUsername(e.target.value);
-  };
-
-  const handlePass = (e) => {
-    setPassword(e.target.value);
-  };
+  function validateForm() {
+    return username.length > 0 && password.length > 0;
+  }
 
   function handleSubmit(event) {
     createFail(false);
@@ -49,14 +40,14 @@ export default function CreateAcc() {
   return (
     <div align="center" className="Login">
     <h1>Create a new account : </h1>
-      <Form>
+      <Form onSubmit={handleSubmit}>
         <Form.Group size="lg" controlId="username">
           <Form.Label>Username</Form.Label>
           <Form.Control
             autoFocus
             type="username"
             value={username}
-            onChange={handleUser}
+            onChange={(e) => setUsername(e.target.value)}
           />
         </Form.Group>
         <Form.Group size="lg" controlId="password">
@@ -64,19 +55,29 @@ export default function CreateAcc() {
           <Form.Control
             type="password"
             value={password}
-            onChange={handlePass}
+            onChange={(e) => setPassword(e.target.value)}
           />
         </Form.Group>
-        <Button block size="lg" type="submit" onClick={handleSubmit}>
+        <Button block size="lg" type="submit" disabled={!validateForm()}
+         onClick={() => {
+                    fetch("http://127.0.0.1:5000/create_acc/" + username + "_" + password)
+                        .then(response => 
+                            response.json()
+                        )
+                        .then(data => {
+                            setCreatedAcc(data.createdAcc)
+			    console.log(createdAcc)
+                        })
+                        .catch(error => {
+                            console.log(error)
+                        })
+                        }}
+        >
           Create Account
         </Button>
         <li>
           <Link to = "/">Back</Link>
         </li>
-        <li>
-          <Link to = "/login">Login to existing account</Link>
-        </li>
-        <h3>{failMessage}</h3>
       </Form>
     </div>
   );

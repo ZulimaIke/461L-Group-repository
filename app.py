@@ -8,7 +8,7 @@ import ssl
 import HWSet
 # comment out on deployment
 from flask_cors import CORS
-from User import User
+from User import User   
 
 # uses 'frontend' because that is where our react app is stored
 app = Flask(__name__, static_folder="frontend/build", static_url_path="/")
@@ -21,24 +21,32 @@ db = c.FinalProject
 
 @app.route('/user/createAcc', methods = ["POST"])
 def createAcc():
+    collection = db.Users
     requestData = json.loads(request.data)
     payload = requestData['data']
 
     username = payload['username']
     password = payload['password']
 
-    user = User(username, password)
+    entry = {
+        "username": username,
+        "password": password
+    }
+    print(username, flush=True)
+    collection.insert_one(entry)
+    return {'response' : 'success'}
+    #user = User(username, password)
 
-    collection = db.Users
-    print(user.dbSend(), flush=True)
-    try:
+    
+    #print(user.dbSend(), flush=True)
+   # try:
         #user_id = collection.insert_one(user.dbSend()).inserted_id
-        collection.insert_one(user.dbSend())
-    except Exception as e:
-        print(e, flush = True)
-        return "account wasn't created"
-    else: 
-        return "account was created"
+    #    collection.insert_one(user.dbSend())
+   # except Exception as e:
+    #    print(e, flush = True)
+      #  return "account wasn't created"
+   # else: 
+     #   return "account was created"
 
 @app.route('/hwSet/<setData>', methods=['GET', 'POST'])
 def createHWSet(setData: str):
