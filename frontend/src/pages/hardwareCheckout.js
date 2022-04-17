@@ -23,9 +23,9 @@ const HardwareCheckout = () => {
         var dataInput = dataInput.concat(quantity);              //concat string to send as one input to backend
 
         console.log(dataInput);
-        fetch('/hwSet/' + dataInput)
+        fetch('http://localhost:5000/hwSet/' + dataInput)
         .then(res => res.json())
-        .then(data => console.log(data)
+        .then(data => console.log(data.hwsetdata)
         );
     }
 	

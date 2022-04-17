@@ -40,7 +40,7 @@ def createAcc():
 
 @app.route('/hwSet/<setData>', methods=['GET', 'POST'])
 def createHWSet(setData: str):
-    return {'response':'Hi'}
+    #return {'response':'Hi'}
     Client = MongoClient("mongodb+srv://2team:T32bfrH0L678xseI@finalproject.njqba.mongodb.net/FinalProject?retryWrites=true&w=majority")
     db = Client.FinalProject
     hwSets = db.HWSets
@@ -50,8 +50,9 @@ def createHWSet(setData: str):
         "Capacity": data[1],
         "Availability": data[1]
     }
+    hwSet0 = entry["Hardware"] + "_" + entry["Capacity"] + "_" + entry["Availability"]
     hwSets.insert_one(entry)
-    return jsonify(entry)
+    return jsonify(hwsetdata = hwSet0)
   
 @app.route('/')
 def index():
