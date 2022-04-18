@@ -4,6 +4,7 @@ import {useTable} from 'react-table';
 import { displayHWSetsColumns } from './displayHWSetsColumns';
 import './manageProject.css';
 import { Link, useNavigate } from "react-router-dom";
+import { color } from '@mui/system';
 
 
 export const DisplayHWSets = () => {
@@ -32,8 +33,19 @@ export const DisplayHWSets = () => {
         );
     })
 
+    const h1Style = {
+        color: "white",
+        height: "10%",
+        justifyContent: "center",
+        alignItems: "center", 
+        display: "flex"
+    }
+
     return (
         <div>
+        <h1 style={h1Style}>
+        Hardware Sets
+        </h1>
         <table {... getTableProps}>
             <thead>
                 {
