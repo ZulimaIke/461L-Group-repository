@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import "./createAcc.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const axios = require("axios").default;
 export default function CreateAcc() {
+  const navigateTo = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [createdAcc, setCreatedAcc] = useState("");
@@ -37,6 +38,7 @@ export default function CreateAcc() {
     })
     .then(function (response) {
       console.log(response);
+      navigateTo('/postLogin')
     })
     .catch(function (error) {
       console.log(error);

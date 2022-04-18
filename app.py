@@ -34,9 +34,13 @@ def createAcc():
 
     collection = db.Users
     findMatch = collection.find_one({'username': username})
-    print(findMatch, flush=True)
-    if findMatch != None:
-        return 'existing user', 400
+    if(findMatch == None):
+        print("no match", flush=True)
+    elif(findMatch != None):
+        print("match", flush=True)
+    
+    #if findMatch != None:
+     #   return 'existing user', 400
 
     try:
         collection.insert_one(user.dbSend())
@@ -60,6 +64,7 @@ def login():
     collection = db.Users
 
     findMatch = collection.find_one({'username': username})
+
 
     if findMatch is None:
         return "user not found"
