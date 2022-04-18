@@ -3,6 +3,7 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import "./createAcc.css";
 import { Link, useNavigate } from "react-router-dom";
+import { ErrorMessage } from '@hookform/error-message';
 
 const axios = require("axios").default;
 export default function CreateAcc() {
@@ -27,7 +28,11 @@ export default function CreateAcc() {
       setCreateFail(true);
       setFailMessage("Please enter a valid username");
       return;
-    } 
+    } else if(!password){
+      setCreateFail(true);
+      setFailMessage("Please enter a valid password");
+      return;
+    }
 
     // axios.post("/user/createAcc/", {
     axios.post("http://localhost:5000/user/createAcc/", {
@@ -38,7 +43,12 @@ export default function CreateAcc() {
     })
     .then(function (response) {
       console.log(response);
-      navigateTo('/postLogin')
+      if(response.data === "user already exists"){
+        setCreateFail(true);
+        setFailMessage("User already exists");
+      } else {
+        navigateTo('/postLogin')
+      }
     })
     .catch(function (error) {
       console.log(error);
@@ -79,6 +89,8 @@ export default function CreateAcc() {
           <Link to = "/login">Login to existing account</Link>
         </li>
       </Form>
+      <h2>{failMessage}</h2>
     </div>
+    
   );
 }

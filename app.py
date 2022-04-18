@@ -38,6 +38,7 @@ def createAcc():
         print("no match", flush=True)
     elif(findMatch != None):
         print("match", flush=True)
+        return "user already exists"
     
     #if findMatch != None:
      #   return 'existing user', 400
@@ -65,13 +66,13 @@ def login():
 
     findMatch = collection.find_one({'username': username})
 
-
-    if findMatch is None:
-        return "user not found"
+    print(findMatch, flush=True)
+    if (findMatch == None):
+        return "invalid username"
     elif (findMatch['password'] == password):
         return "success"
     else:
-        return "password is invalid"
+        return "invalid password"
 
 
 @app.route('/hwSet/<setData>', methods=['GET', 'POST'])

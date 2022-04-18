@@ -44,6 +44,7 @@ export default function Login() {
     })
     .then(function (response) {
       let requestResponse = response.data;
+      console.log(requestResponse);
       if(requestResponse === "invalid username"){
         setLoginFail(true);
         setFailMessage("Invalid username");
@@ -52,6 +53,7 @@ export default function Login() {
         setFailMessage("Invalid password");
       } else {
         navigateTo('/postLogin');
+
       }
     })
     .catch(function (error) {
@@ -95,6 +97,7 @@ export default function Login() {
           <Link to = "/createAcc">New? Create an account</Link>
         </li>
       </Form>
+      <h1>{failMessage}</h1>
     </div>
   );
 }
