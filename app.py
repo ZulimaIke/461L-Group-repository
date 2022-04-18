@@ -1,4 +1,6 @@
+
 from distutils.log import debug
+from mailcap import findmatch
 from flask import Flask, jsonify, request
 from flask.helpers import send_from_directory
 from pymongo import MongoClient
@@ -31,6 +33,10 @@ def createAcc():
     user = User(username, password)
 
     collection = db.Users
+    findMatch = collection.find_one({'username': username})
+    print(findMatch, flush=True)
+    if findMatch != None:
+        return 'existing user', 400
 
     try:
         collection.insert_one(user.dbSend())
@@ -40,6 +46,28 @@ def createAcc():
     else:
         return "Success"
     return 404
+
+@app.route('/user/login/', methods = ["POST"])
+def login():
+    requestData = json.loads(request.data)
+    payload = requestData['data']
+
+    username = payload['username']
+    password = payload['password']
+
+    user = User(username, password)
+
+    collection = db.Users
+
+    findMatch = collection.find_one({'username': username})
+
+    if findMatch is None:
+        return "user not found"
+    elif (findMatch['password'] == password):
+        return "success"
+    else:
+        return "password is invalid"
+
 
 @app.route('/hwSet/<setData>', methods=['GET', 'POST'])
 def createHWSet(setData: str):

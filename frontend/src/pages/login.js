@@ -36,7 +36,7 @@ export default function Login() {
       return;
     }
     
-    axios.post('/user/login', {
+    axios.post("http://localhost:5000/user/login/", {
       data: {
         username: username,
         password: password,
