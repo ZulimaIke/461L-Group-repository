@@ -22,7 +22,7 @@ function PostLogin() {
       <Link to = "/manageProject">Manage existing project</Link>
       </li>
       <li>
-      <Link to = "/">Logout</Link>
+      <Link to = "/logout">Logout</Link>
       </li>
     </div>
 

@@ -5,32 +5,31 @@ import "./createAcc.css";
 import { Link } from "react-router-dom";
 
 const axios = require("axios").default;
-
-
 export default function CreateAcc() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [createdAcc, setCreatedAcc] = useState("");
   const [createFail, setCreateFail] = useState(false);
-  const[failMessage, setFailMessage] = useState("");
+  const [failMessage, setFailMessage] = useState("");
 
   const handleUser = (e) => {
     setUsername(e.target.value);
-  };
-
+  };  
   const handlePass = (e) => {
     setPassword(e.target.value);
   };
 
-  function handleSubmit(event) {
-    createFail(false);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setCreateFail(false);
     if(!username){
-      createFail(true);
+      setCreateFail(true);
       setFailMessage("Please enter a valid username");
       return;
     } 
 
-    axios.post("/user/createAcc", {
+    // axios.post("/user/createAcc/", {
+    axios.post("http://localhost:5000/user/createAcc/", {
       data:{
         username: username,
         password: password,
@@ -66,7 +65,9 @@ export default function CreateAcc() {
             onChange={handlePass}
           />
         </Form.Group>
-        <Button block size="lg" type="submit" onClick={handleSubmit}>
+        <Button block size="lg" type="submit" 
+         onClick={handleSubmit}
+        >
           Create Account
         </Button>
         <li>
@@ -75,7 +76,6 @@ export default function CreateAcc() {
         <li>
           <Link to = "/login">Login to existing account</Link>
         </li>
-        <h3>{failMessage}</h3>
       </Form>
     </div>
   );

@@ -7,6 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 const axios = require("axios").default;
 
 export default function Login() {
+  const [loginSuccess, setLoginSuccess] = useState("");
   const navigateTo = useNavigate();
   const [username, setUsername] = useState();
   const [password, setPassword] = useState();
@@ -16,12 +17,12 @@ export default function Login() {
   const handleUser = (e) => {
     setUsername(e.target.value);
   };
-
   const handlePass = (e) => {
     setPassword(e.target.value);
   };
 
-  function handleSubmit(event) {
+  const handleSubmit = (e) => {
+    e.preventDefault();
     //no login fail
     setLoginFail(false);
     //Check for fail if missing username/password
@@ -35,7 +36,7 @@ export default function Login() {
       return;
     }
     
-    axios.post('/user/login', {
+    axios.post("http://localhost:5000/user/login/", {
       data: {
         username: username,
         password: password,
@@ -59,10 +60,11 @@ export default function Login() {
 
   };
 
+
   return (
     <div align="center" className="Login">
     <h1>Sign into an existing account</h1>
-      <Form>
+      <Form onSubmit={handleSubmit}>
         <Form.Group size="lg" controlId="username">
           <Form.Label>Username</Form.Label>
           <Form.Control
@@ -80,7 +82,9 @@ export default function Login() {
             onChange={handlePass}
           />
         </Form.Group>
-        <Button block size="lg" type="submit" onClick={handleSubmit}>
+        <Button block size="lg" type="submit"
+         onClick={handleSubmit}
+        >
           Login
         </Button>
 
@@ -88,13 +92,9 @@ export default function Login() {
           <Link to = "/">Back</Link>
         </li>
         <li>
-          <Link to = "/createAcc">Create new account</Link>
+          <Link to = "/createAcc">New? Create an account</Link>
         </li>
-        <div>
-          <h3>{failMessage}</h3>
-        </div>
       </Form>
-     
     </div>
   );
 }
