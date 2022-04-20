@@ -19,13 +19,13 @@ function PostLogin() {
       <Link to = "/newProject">Create new project</Link>
       </li>
       <li>
-      <Link to = "/manageProject">Manage existing project</Link>
+      <Link to = "/manageProject">View existing projects</Link>
       </li>
       <li>
       <Link to = "/joinProject">Join an existing project</Link>
       </li>
       <li>
-      <Link to = "/hardwareCheckout">Checkout Hardware Sets</Link>
+      <Link to = "/hardwareCheckout">Checkin and Checkout Hardware Sets</Link>
       </li>
       <li>
       <Link to = "/dataAccess">Access Metadata</Link>
