@@ -26,12 +26,12 @@ return (
 			{/* <link>About</link> */}
 			Hardware Checkout
 		</NavigationLink>
-		<NavigationLink to='/postLogin' activeStyle>
+	        <NavigationLink to='/postLogin' activeStyle>
 			Project Management
 		</NavigationLink>
 		<NavigationLink to='/dataAccess' activeStyle>
 			Data Access
-		</NavigationLink> 		
+		</NavigationLink>		
 		</NavigationMenu>
 		 <NavigationButton>
 		<ButtonPress to='/logout'>Logout</ButtonPress>

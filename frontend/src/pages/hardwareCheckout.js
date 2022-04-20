@@ -1,9 +1,11 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect, useMemo } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Button from "react-bootstrap/Button";
 import { spacing } from '@mui/system';
 import { Form } from 'react-bootstrap';
 import "./login.css";
+import {useTable} from 'react-table';
+import { Columns } from './columns3';
 //import createhardwareSet from './hardwareSets';
 
 
@@ -11,28 +13,80 @@ const HardwareCheckout = () => {
 
     const [hwSetName,setHWSetName] = useState("");
     const [quantity, setQuantity] = useState("");
+    const [username, setUsername] = useState("");
     const [dataOutput, setDataOutput] = useState("");
+    const [successfullyCreated, setSuccessfullyCreated] = useState("");
+
+    const [user_data, setUserData] = useState([]);
+    const columns = useMemo(() => Columns, [])
+
+    const tableInstance = useTable({
+        columns: columns,
+        data: user_data
+    })
+
+    const {
+        getTableProps,
+        getTableBodyProps,
+        headerGroups,
+        rows,
+        prepareRow 
+    } = tableInstance
 
     function validateEntry() {
         return hwSetName.length > 0 && quantity.length > 0;
     }
 
-    function sendData() {
-        console.log("made it");
-        var dataInput = hwSetName.concat("_");
-        var dataInput = dataInput.concat(quantity);              //concat string to send as one input to backend
+  function userMessage(flag) {
+    alert(flag);
+  }
 
-        console.log(dataInput);
-        fetch('http://localhost:5000/hwSet/' + dataInput)
-        .then(res => res.json())
-        .then(data => console.log(data.hwsetdata)
-        );
-    }
+    useEffect(() => {
+      fetch("http://127.0.0.1:5000/getHW/")
+                        .then(response => 
+                            response.json()
+                        )
+                        .then(data => {
+                            setUserData(JSON.parse(data.user_data))
+                        })
+                        .catch(error => {
+                            console.log(error)
+                        })
+                        })
 	
     return (
-        <div align= "center" className='Login'>          
-        <Form>
-        <Form.Group size="lg" controlId="hwSetName">
+        <div align= "center" className='Login'> 
+        <table {... getTableProps}>
+            <thead>
+                {
+                    headerGroups.map((headerGroup) => (
+                    <tr {...headerGroup.getHeaderGroupProps()}>
+                        {headerGroup.headers.map((column) => (
+                            <th {...column.getHeaderProps}>
+                                {column.render('Header')}
+                            </th>
+                        ))}
+                    </tr>
+                    ))
+                }
+                
+            </thead>
+            <tbody {...getTableBodyProps}>
+                { rows.map(row => {
+                    prepareRow(row)
+                    return (
+                    <tr {...row.getRowProps()}>
+                        { row.cells.map((cell) => {
+                            return <td {...cell.getCellProps()}> {cell.render('Cell')} </td>  
+                        })}
+                    </tr>
+                    )
+                })}                
+            </tbody>
+        </table>
+         
+        <Form> 
+           <Form.Group size="lg" controlId="hwSetName">
           <Form.Label>Set Name</Form.Label>
           <Form.Control
             autoFocus
@@ -49,8 +103,45 @@ const HardwareCheckout = () => {
             onChange={(e) => setQuantity(e.target.value)}
           />
         </Form.Group>
-        <Button type="button" disabled={!validateEntry} onClick={sendData}>
-            Create New Set
+        <Form.Group size="lg" controlId="username">
+          <Form.Label>project ID</Form.Label>
+          <Form.Control
+            type="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </Form.Group>        
+<Button type="button" disabled={!validateEntry}
+        onClick={() => {
+                    fetch("http://127.0.0.1:5000/checkout/" + hwSetName + "_" + quantity + "_" + username)
+                        .then(response => 
+                            response.json()
+                        )
+                        .then(data => {
+			    userMessage(data.successfullyCreated);                                			    setSuccessfullyCreated(data.successfullyCreated);   
+                        })
+                        .catch(error => {
+                            console.log(error)
+                        })
+                        }}
+        >
+            Check Out
+        </Button>       
+<Button type="button" disabled={!validateEntry}
+        onClick={() => {
+                    fetch("http://127.0.0.1:5000/checkin/" + hwSetName + "_" + quantity + "_" + username)
+                        .then(response => 
+                            response.json()
+                        )
+                        .then(data => {
+			    userMessage(data.successfullyCreated);                                			    setSuccessfullyCreated(data.successfullyCreated);   
+                        })
+                        .catch(error => {
+                            console.log(error)
+                        })
+                        }}
+        >
+            Check In
         </Button>
         </Form>
         </div>

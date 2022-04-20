@@ -14,12 +14,21 @@ function PostLogin() {
 
   return (
     <div>
-      <h1>Welcome User : __(Fill in)__</h1>
+      <h1>Welcome</h1>
       <li>
       <Link to = "/newProject">Create new project</Link>
       </li>
       <li>
       <Link to = "/manageProject">Manage existing project</Link>
+      </li>
+      <li>
+      <Link to = "/joinProject">Join an existing project</Link>
+      </li>
+      <li>
+      <Link to = "/hardwareCheckout">Checkout Hardware Sets</Link>
+      </li>
+      <li>
+      <Link to = "/dataAccess">Access Metadata</Link>
       </li>
       <li>
       <Link to = "/">Logout</Link>

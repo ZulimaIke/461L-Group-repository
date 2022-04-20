@@ -12,7 +12,11 @@ export const Columns = [
         accessor: 'ID'
     },
     {
-        Header: 'Other Data',
+        Header: 'Description',
         accessor: 'Description'
+    },
+    {
+        Header: 'HWSets Checked Out',
+        accessor: 'HWSets Checked Out'
     }
 ]
