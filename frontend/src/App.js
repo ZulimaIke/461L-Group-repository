@@ -18,7 +18,6 @@ import Navbar from './component_navbar/index';
 function App() {
 return (
 	<Router>
-    <Navbar/>
     <Routes>
       <Route path='/' exact element={<Home />} />
       <Route path='/hardwareCheckout' element={<HardwareCheckout />} />
