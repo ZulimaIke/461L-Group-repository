@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 
 export default function JoinProject() {
   const [projectID, setProjectID] = useState("");
-  const [projectUser, setProjectUser] = useState("");
   const [successfullyCreated, setSuccessfullyCreated] = useState("");
 
   function userMessage(flag) {
@@ -20,7 +19,7 @@ export default function JoinProject() {
   }
 
   function validateForm() {
-    return projectID.length > 0 && projectUser.length > 0;
+    return projectID.length > 0;
   }
 
   function handleSubmit(event) {
@@ -39,17 +38,9 @@ export default function JoinProject() {
             onChange={(e) => setProjectID(e.target.value)}
           />
         </Form.Group>
-        <Form.Group size="lg" controlId="projectUser">
-          <Form.Label>Confirm by typing your username </Form.Label>
-          <Form.Control
-            type="projectUser"
-            value={projectUser}
-            onChange={(e) => setProjectUser(e.target.value)}
-          />
-        </Form.Group>
         <Button block size="lg" type="submit" disabled={!validateForm()}
          onClick={() => {
-                    fetch("http://127.0.0.1:5000/joinProject/" + projectID + "_" + projectUser)
+                    fetch("/joinProject/" + projectID)
                         .then(response => 
                             response.json()
                         )
