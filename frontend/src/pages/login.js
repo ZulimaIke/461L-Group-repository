@@ -1,84 +1,157 @@
-import React, { useState } from "react";
-import Form from "react-bootstrap/Form";
+import React, {useState, useEffect, useMemo } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Button from "react-bootstrap/Button";
-import "./login.css";
+import { spacing } from '@mui/system';
+import { Form } from 'react-bootstrap';
 import { Link } from "react-router-dom";
+import "./login.css";
+import {useTable} from 'react-table';
+import { Columns } from './columns3';
+//import createhardwareSet from './hardwareSets';
 
-export default function Login() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [loginSuccess, setLoginSuccess] = useState("");
+
+const HardwareCheckout = () => {
+
+    const [hwSetName,setHWSetName] = useState("");
+    const [quantity, setQuantity] = useState("");
+    const [username, setUsername] = useState("");
+    const [dataOutput, setDataOutput] = useState("");
+    const [successfullyCreated, setSuccessfullyCreated] = useState("");
+
+    const [user_data, setUserData] = useState([]);
+    const columns = useMemo(() => Columns, [])
+
+    const tableInstance = useTable({
+        columns: columns,
+        data: user_data
+    })
+
+    const {
+        getTableProps,
+        getTableBodyProps,
+        headerGroups,
+        rows,
+        prepareRow 
+    } = tableInstance
+
+    function validateEntry() {
+        return hwSetName.length > 0 && quantity.length > 0;
+    }
 
   function userMessage(flag) {
-    if (flag == "true") {
-      alert("Login Successful");
-    }
-    else {
-      alert("Invalid username/password");
-    }
+    alert(flag);
   }
 
-  function redirect(flag) {
-    if (flag == "true") {
-      window.location.href='/postLogin';
-    }
-  }
-
-  function validateForm() {
-    return username.length > 0 && password.length > 0;
-  }
-
-  function handleSubmit(event) {
-    event.preventDefault();
-  }
-
-  return (
-    <div align="center" className="Login">
-    <h1>Sign into an existing account</h1>
-      <Form onSubmit={handleSubmit}>
-        <Form.Group size="lg" controlId="username">
-          <Form.Label>Username</Form.Label>
-          <Form.Control
-            autoFocus
-            type="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </Form.Group>
-        <Form.Group size="lg" controlId="password">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </Form.Group>
-        <Button block size="lg" type="submit" disabled={!validateForm()}
-         onClick={() => {
-                    fetch("http://127.0.0.1:5000/login/" + username + "_" + password)
+    useEffect(() => {
+      fetch("/getHW/")
                         .then(response => 
                             response.json()
                         )
                         .then(data => {
-                            console.log(data)
-                            setLoginSuccess(data.loginSuccess)
-                            userMessage(data.loginSuccess)
-                            redirect(data.loginSuccess)
+                            setUserData(JSON.parse(data.user_data))
                         })
-			//.then(userMessage(loginSuccess))
-                        //.then(redirect(loginSuccess))
+                        .catch(error => {
+                            console.log(error)
+                        })
+                        })
+	
+    return (
+        <div align= "center" className='Login'> 
+        <table {... getTableProps}>
+            <thead>
+                {
+                    headerGroups.map((headerGroup) => (
+                    <tr {...headerGroup.getHeaderGroupProps()}>
+                        {headerGroup.headers.map((column) => (
+                            <th {...column.getHeaderProps}>
+                                {column.render('Header')}
+                            </th>
+                        ))}
+                    </tr>
+                    ))
+                }
+                
+            </thead>
+            <tbody {...getTableBodyProps}>
+                { rows.map(row => {
+                    prepareRow(row)
+                    return (
+                    <tr {...row.getRowProps()}>
+                        { row.cells.map((cell) => {
+                            return <td {...cell.getCellProps()}> {cell.render('Cell')} </td>  
+                        })}
+                    </tr>
+                    )
+                })}                
+            </tbody>
+        </table>
+         
+        <Form> 
+           <Form.Group size="lg" controlId="hwSetName">
+          <Form.Label>Set Name</Form.Label>
+          <Form.Control
+            autoFocus
+            type="hwSetName"
+            value={hwSetName}
+            onChange={(e) => setHWSetName(e.target.value)}
+          />
+        </Form.Group>
+        <Form.Group size="lg" controlId="quantity">
+          <Form.Label>Quantity</Form.Label>
+          <Form.Control
+            type="quantity"
+            value={quantity}
+            onChange={(e) => setQuantity(e.target.value)}
+          />
+        </Form.Group>
+        <Form.Group size="lg" controlId="username">
+          <Form.Label>project ID</Form.Label>
+          <Form.Control
+            type="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </Form.Group>        
+<Button type="button" disabled={!validateEntry}
+        onClick={() => {
+                    fetch("/checkout/" + hwSetName + "_" + quantity + "_" + username)
+                        .then(response => 
+                            response.json()
+                        )
+                        .then(data => {
+			    userMessage(data.successfullyCreated);                                			    setSuccessfullyCreated(data.successfullyCreated);   
+                        })
                         .catch(error => {
                             console.log(error)
                         })
                         }}
         >
-          Login
+            Check Out
+        </Button>       
+<Button type="button" disabled={!validateEntry}
+        onClick={() => {
+                    fetch("/checkin/" + hwSetName + "_" + quantity + "_" + username)
+                        .then(response => 
+                            response.json()
+                        )
+                        .then(data => {
+			    userMessage(data.successfullyCreated);                                			    setSuccessfullyCreated(data.successfullyCreated);   
+                        })
+                        .catch(error => {
+                            console.log(error)
+                        })
+                        }}
+        >
+            Check In
         </Button>
-
-        <li>
-          <Link to = "/">Back</Link>
+	<li>
+          <Link to = "/postLogin">Back</Link>
         </li>
-      </Form>
-    </div>
-  );
-}
+        </Form>
+        </div>
+
+    
+    );
+    };
+    
+export default HardwareCheckout;
