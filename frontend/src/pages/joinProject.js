@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 
 export default function JoinProject() {
   const [projectID, setProjectID] = useState("");
   const [successfullyCreated, setSuccessfullyCreated] = useState("");
+  const navigate = useNavigate():
 
   function userMessage(flag) {
     alert(flag);
@@ -14,7 +15,7 @@ export default function JoinProject() {
 
   function redirect(flag) {
     if (flag == "Successfully joined") {
-      window.location.href='/postLogin';
+      navigate("/postLogin/");
     }
   }
 

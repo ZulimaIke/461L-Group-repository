@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import "./login.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loginSuccess, setLoginSuccess] = useState("");
+  const navigate = useNavigate();
 
   function userMessage(flag) {
     if (flag == "true") {
@@ -20,7 +21,7 @@ export default function Login() {
 
   function redirect(flag) {
     if (flag == "true") {
-      window.location.href='/postLogin';
+      navigate("/postLogin/");
     }
   }
 

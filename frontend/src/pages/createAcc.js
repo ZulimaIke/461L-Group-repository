@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import "./createAcc.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function CreateAcc() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [createdAcc, setCreatedAcc] = useState("");
+  const navigate = useNavigate();
 
   function userMessage(flag) {
     if (flag == "true") {
@@ -20,7 +21,7 @@ export default function CreateAcc() {
 
   function redirect(flag) {
     if (flag == "true") {
-      window.location.href='/login';
+      navigate("/login/");
     }
   return false;
   }
