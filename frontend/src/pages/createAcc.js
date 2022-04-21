@@ -22,6 +22,7 @@ export default function CreateAcc() {
     if (flag == "true") {
       window.location.href='/login';
     }
+  return false;
   }
 
   function validateForm() {
