@@ -21,7 +21,7 @@ export default function CreateAcc() {
 
   function redirect(flag) {
     if (flag == "true") {
-      navigate("/login/");
+      navigate("/login/", { replace: true });
     }
   return false;
   }
