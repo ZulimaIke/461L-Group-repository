@@ -8,10 +8,10 @@ import ssl
 #from flask_cors import CORS
 
 # uses 'frontend' because that is where our react app is stored
-#app = Flask(__name__, static_folder="frontend/build", static_url_path="")
+app = Flask(__name__, static_folder="frontend/build", static_url_path="")
 
 # comment out on deployment
-CORS(app)
+#CORS(app)
 
 @app.route("/create_acc/<userAndPass>", methods=["GET"])
 def create_acc(userAndPass: str):
