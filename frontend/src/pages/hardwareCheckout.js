@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Button from "react-bootstrap/Button";
 import { spacing } from '@mui/system';
 import { Form } from 'react-bootstrap';
+import { Link } from "react-router-dom";
 import "./login.css";
 import {useTable} from 'react-table';
 import { Columns } from './columns3';
@@ -42,7 +43,7 @@ const HardwareCheckout = () => {
   }
 
     useEffect(() => {
-      fetch("http://127.0.0.1:5000/getHW/")
+      fetch("/getHW/")
                         .then(response => 
                             response.json()
                         )
@@ -113,7 +114,7 @@ const HardwareCheckout = () => {
         </Form.Group>        
 <Button type="button" disabled={!validateEntry}
         onClick={() => {
-                    fetch("http://127.0.0.1:5000/checkout/" + hwSetName + "_" + quantity + "_" + username)
+                    fetch("/checkout/" + hwSetName + "_" + quantity + "_" + username)
                         .then(response => 
                             response.json()
                         )
@@ -129,7 +130,7 @@ const HardwareCheckout = () => {
         </Button>       
 <Button type="button" disabled={!validateEntry}
         onClick={() => {
-                    fetch("http://127.0.0.1:5000/checkin/" + hwSetName + "_" + quantity + "_" + username)
+                    fetch("/checkin/" + hwSetName + "_" + quantity + "_" + username)
                         .then(response => 
                             response.json()
                         )
@@ -143,6 +144,9 @@ const HardwareCheckout = () => {
         >
             Check In
         </Button>
+	<li>
+          <Link to = "/postLogin">Back</Link>
+        </li>
         </Form>
         </div>
 
