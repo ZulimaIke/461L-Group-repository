@@ -10,7 +10,6 @@ export default function NewProject() {
   const [projectName, setProjectName] = useState("");
   const [projectID, setProjectID] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
-  const [projectUser, setProjectUser] = useState("");
   const [successfullyCreated, setSuccessfullyCreated] = useState("");
 
   function userMessage(flag) {
@@ -63,17 +62,9 @@ export default function NewProject() {
             onChange={(e) => setProjectDescription(e.target.value)}
           />
         </Form.Group>
-        <Form.Group size="lg" controlId="projectUser">
-          <Form.Label>Confirm by typing username </Form.Label>
-          <Form.Control
-            type="projectUser"
-            value={projectUser}
-            onChange={(e) => setProjectUser(e.target.value)}
-          />
-        </Form.Group>
         <Button block size="lg" type="submit" disabled={!validateForm()}
          onClick={() => {
-                    fetch("http://127.0.0.1:5000/newProject/" + projectName + "_" + projectID + "_" + projectDescription + "_" + projectUser)
+                    fetch("/newProject/" + projectName + "!" + projectID + "!" + projectDescription)
                         .then(response => 
                             response.json()
                         )
@@ -98,4 +89,3 @@ export default function NewProject() {
     </div>
   );
 }
-
