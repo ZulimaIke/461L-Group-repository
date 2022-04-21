@@ -55,7 +55,7 @@ export default function CreateAcc() {
         </Form.Group>
         <Button block size="lg" type="submit" disabled={!validateForm()}
          onClick={() => {
-                    fetch("http://127.0.0.1:5000/create_acc/" + username + "_" + password)
+                    fetch("/create_acc/" + username + "!" + password)
                         .then(response => 
                             response.json()
                         )
