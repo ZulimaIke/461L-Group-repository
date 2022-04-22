@@ -56,7 +56,7 @@ export default function Login() {
         </Form.Group>
         <Button block size="lg" type="submit" disabled={!validateForm()}
          onClick={() => {
-                    fetch("http://127.0.0.1:5000/login/" + username + "!" + password)
+                    fetch("/login/" + username + "!" + password)
                         .then(response => 
                             response.json()
                         )
