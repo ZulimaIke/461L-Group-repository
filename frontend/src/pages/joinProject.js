@@ -7,7 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 export default function JoinProject() {
   const [projectID, setProjectID] = useState("");
   const [successfullyCreated, setSuccessfullyCreated] = useState("");
-  const navigate = useNavigate():
+  const navigate = useNavigate();
 
   function userMessage(flag) {
     alert(flag);
