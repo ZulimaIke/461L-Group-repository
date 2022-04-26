@@ -272,7 +272,7 @@ def getAProject(projectInfo: str):
     search = Projects.find_one({"ID": projectID})
     
     if search is None:
-            output = "project doesn't exist"
+        output = "project doesn't exist"
     else:
         output = search
     Client.close()
