@@ -28,7 +28,9 @@ def create_acc(userAndPass: str):
     if search is None:
         newUser = {
         "Username" : username,
-        "Password" : password}
+        "Password" : password,
+        "Projects" : []
+        }
         UserAndPass.insert_one(newUser)
         Client.close()
         output = "true"
@@ -122,6 +124,7 @@ def joinProject(projectInfo: str):
     Client=MongoClient("mongodb+srv://josephhuynh:Jh032001@cluster0.rtq6j.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
     db = Client.Cluster0
     Projects = db.Projects
+    UserAndPass = db.UserAndPass
     search = Projects.find_one({"ID": projectID})
     newSearch = Projects.find_one({
         "$and": [
@@ -136,6 +139,7 @@ def joinProject(projectInfo: str):
     else:
         if newSearch is None:
             Projects.update_one({'ID': projectID}, {'$push': {'Users': projectUser}})
+            UserAndPass.update_one({'Username': projectUser}, {'$push':{ "Projects": {"Name" :search["Name"], "HWSet1" : 0, "HWSet2" : 0} }})
             output = "Successfully joined"
         else:
             Client.close()
@@ -166,7 +170,8 @@ def checkout(checkoutInfo: str):
     Client=MongoClient("mongodb+srv://josephhuynh:Jh032001@cluster0.rtq6j.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
     db = Client.Cluster0
     HWSet = db.HWSet
-    search = HWSet.find_one({"Name": hwSetName}, {"Availability": 1});
+    UserAndPass = db.UserAndPass
+    search = HWSet.find_one({"Name": hwSetName}, {"Availability": 1})
     
     if search is None:
         Client.close()
@@ -189,6 +194,16 @@ def checkout(checkoutInfo: str):
                 newAvail = search["Availability"] - quantity
                 HWSet.update_one({'Name': hwSetName}, {'$inc': {project: quantity}})
                 HWSet.update_one({'Name': hwSetName}, {'$set': {'Availability': newAvail}})
+
+                user = UserAndPass.find_one({'Username': projectUser})
+                projectList = user["Projects"]
+                for project in projectList:
+                    if project["Name"] == search["Name"]:
+                        project[hwSetName] += quantity
+                        break
+                
+                UserAndPass.update_one({'Username': projectUser}, {'$set':{ "Projects": projectList }})
+                
                 output = "Successfully Checked Out"
                 Projects = db.Projects
                 Projects.update_one({'ID' : project}, {'$inc': {'HWSets Checked Out': quantity}})
@@ -208,7 +223,8 @@ def checkin(checkinInfo: str):
     Client=MongoClient("mongodb+srv://josephhuynh:Jh032001@cluster0.rtq6j.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
     db = Client.Cluster0
     HWSet = db.HWSet
-    search = HWSet.find_one({"Name": hwSetName}, {project: 1});
+    UserAndPass = db.UserAndPass
+    search = HWSet.find_one({"Name": hwSetName}, {project: 1})
     
     if search is None:
         Client.close()
@@ -228,15 +244,58 @@ def checkin(checkinInfo: str):
             if (search[project] - quantity) < 0:
                 output = "Error: Checking In More Than Checked Out"
             else:
-                avail = HWSet.find_one({"Name": hwSetName}, {"Availability": 1});
+                avail = HWSet.find_one({"Name": hwSetName}, {"Availability": 1})
                 newAvail = avail["Availability"] + quantity
                 HWSet.update_one({'Name': hwSetName}, {'$inc': {project: (quantity * -1)}})
                 HWSet.update_one({'Name': hwSetName}, {'$set': {'Availability': newAvail}})
                 output = "Successfully Checked In"
+
+                user = UserAndPass.find_one({'Username': projectUser})
+                projectList = user["Projects"]
+                for project in projectList:
+                    if project["Name"] == search["Name"]:
+                        project[hwSetName] -= quantity
+                        break
+                
+                UserAndPass.update_one({'Username': projectUser}, {'$set':{ "Projects": projectList }})
                 Projects = db.Projects
                 Projects.update_one({'ID' : project}, {'$inc': {'HWSets Checked Out': (quantity * -1)}})
     Client.close()
     return jsonify(successfullyCreated=output)
+
+@app.route("/getAProject/<projectInfo>", methods=["GET"])
+def getAProject(projectInfo: str):
+    projectID = projectInfo
+    Client = MongoClient("mongodb+srv://josephhuynh:Jh032001@cluster0.rtq6j.mongodb.net/HWSet?retryWrites=true&w=majority")
+    db = Client.Cluster0
+    Projects = db.Projects
+    search = Projects.find_one({"ID": projectID})
+    
+    if search is None:
+            output = "project doesn't exist"
+    else:
+        output = search
+    Client.close()
+
+    return jsonify(project_data=output)
+
+@app.route("/getUserInfo/", methods=["GET"])
+def getUserInfo():
+    f = open("stored.txt", "r")
+    projectUser = f.read()
+    projectList = []
+    Client=MongoClient("mongodb+srv://josephhuynh:Jh032001@cluster0.rtq6j.mongodb.net/HWSet?retryWrites=true&w=majority")
+    db = Client.Cluster0
+    UserAndPass = db.UserAndPass
+    user = UserAndPass.find_one({'Username': projectUser})
+    projectList = user["Projects"]
+    output = {
+        "Name": projectUser,
+        "Projects": projectList
+    }
+
+    Client.close()
+    return jsonify(user_data=output)    
     
 @app.route("/")
 def index():
