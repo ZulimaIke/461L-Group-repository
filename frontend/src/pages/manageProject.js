@@ -3,9 +3,7 @@ import {useTable} from 'react-table';
 //import user_data file
 import { Columns } from './columns';
 import './manageProject.css';
-import {DropdownButton, Dropdown} from 'react-bootstrap';
-import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
-
+import { Link } from "react-router-dom";
 
 export const ManageProject = () => {
 
@@ -27,7 +25,7 @@ export const ManageProject = () => {
     } = tableInstance
 
     useEffect(() => {
-      fetch("http://127.0.0.1:5000/getProjects/")
+      fetch("/getProjects/")
                         .then(response => 
                             response.json()
                         )
@@ -40,7 +38,6 @@ export const ManageProject = () => {
                         })
 
     return (
-        <div>
         <table {... getTableProps}>
             <thead>
                 {
@@ -68,20 +65,10 @@ export const ManageProject = () => {
                     )
                 })}                
             </tbody>
+	<li>
+          <Link to = "/postLogin">Back</Link>
+        </li>
         </table>
-        <FormControl fullWidth>
-            <InputLabel id="project-stack">Project Selection</InputLabel>
-            <Select
-                labelId="project-stack"
-                id="project-select"
-                >
-                    <MenuItem>Project 1</MenuItem>
-                    <MenuItem>Project 2</MenuItem>
-                    <MenuItem>Project 3</MenuItem>
-            </Select>
-        </FormControl>
-        </div>
-        
     )
 
 }
