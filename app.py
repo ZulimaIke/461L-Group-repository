@@ -24,6 +24,8 @@ mongoPass = "T32bfrH0L678xseI"
 Client=MongoClient("mongodb+srv://josephhuynh:Jh032001@cluster0.rtq6j.mongodb.net/HWSet?retryWrites=true&w=majority")
 db = Client.Cluster0
 UserAndPass = db.UserAndPass
+Projects = db.Projects
+HWSet = db.HWSet
 
 
 @app.route('/user/createAcc/', methods = ["POST"])
@@ -89,9 +91,6 @@ def newProject(projectInfo: str):
     f = open("stored.txt", "r")
     projectUser = f.read()
 
-    Client=MongoClient("mongodb+srv://josephhuynh:Jh032001@cluster0.rtq6j.mongodb.net/HWSet?retryWrites=true&w=majority")
-    db = Client.Cluster0
-    Projects = db.Projects
     search = Projects.find_one({"ID": projectID})
     if search is None:
         newProject = {
@@ -114,9 +113,6 @@ def newProject(projectInfo: str):
 
 @app.route("/getProjects/", methods=["GET"])
 def getProjects():
-    Client=MongoClient("mongodb+srv://josephhuynh:Jh032001@cluster0.rtq6j.mongodb.net/HWSet?retryWrites=true&w=majority")
-    db = Client.Cluster0
-    Projects = db.Projects
     cursor = Projects.find({})
     list_cur = list(cursor)
     output = dumps(list_cur)
@@ -130,10 +126,6 @@ def joinProject(projectInfo: str):
     f = open("stored.txt", "r")
     projectUser = f.read()
 
-    Client=MongoClient("mongodb+srv://josephhuynh:Jh032001@cluster0.rtq6j.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
-    db = Client.Cluster0
-    Projects = db.Projects
-    UserAndPass = db.UserAndPass
     search = Projects.find_one({"ID": projectID})
     newSearch = Projects.find_one({
         "$and": [
@@ -157,9 +149,8 @@ def joinProject(projectInfo: str):
 
 @app.route("/getHW/", methods=["GET"])
 def getHW():
-    Client=MongoClient("mongodb+srv://josephhuynh:Jh032001@cluster0.rtq6j.mongodb.net/HWSet?retryWrites=true&w=majority")
-    db = Client.Cluster0
-    HWSet = db.HWSet
+
+
     cursor = HWSet.find({})
     list_cur = list(cursor)
     output = dumps(list_cur)
@@ -176,10 +167,6 @@ def checkout(checkoutInfo: str):
     f = open("stored.txt", "r")
     projectUser = f.read()
 
-    Client=MongoClient("mongodb+srv://josephhuynh:Jh032001@cluster0.rtq6j.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
-    db = Client.Cluster0
-    HWSet = db.HWSet
-    UserAndPass = db.UserAndPass
     search = HWSet.find_one({"Name": hwSetName}, {"Availability": 1})
     
     if search is None:
@@ -229,10 +216,6 @@ def checkin(checkinInfo: str):
     f = open("stored.txt", "r")
     projectUser = f.read()
 
-    Client=MongoClient("mongodb+srv://josephhuynh:Jh032001@cluster0.rtq6j.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
-    db = Client.Cluster0
-    HWSet = db.HWSet
-    UserAndPass = db.UserAndPass
     search = HWSet.find_one({"Name": hwSetName}, {project: 1})
     
     if search is None:
@@ -275,9 +258,7 @@ def checkin(checkinInfo: str):
 @app.route("/getAProject/<projectInfo>", methods=["GET"])
 def getAProject(projectInfo: str):
     projectID = projectInfo
-    Client = MongoClient("mongodb+srv://josephhuynh:Jh032001@cluster0.rtq6j.mongodb.net/HWSet?retryWrites=true&w=majority")
-    db = Client.Cluster0
-    Projects = db.Projects
+
     search = Projects.find_one({"ID": projectID})
     
     if search is None:
@@ -293,9 +274,7 @@ def getUserInfo():
     f = open("stored.txt", "r")
     projectUser = f.read()
     projectList = []
-    Client=MongoClient("mongodb+srv://josephhuynh:Jh032001@cluster0.rtq6j.mongodb.net/HWSet?retryWrites=true&w=majority")
-    db = Client.Cluster0
-    UserAndPass = db.UserAndPass
+
     user = UserAndPass.find_one({'Username': projectUser})
     projectList = user["Projects"]
     output = {
