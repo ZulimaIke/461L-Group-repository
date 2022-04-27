@@ -65,6 +65,7 @@ export default function NewProject() {
         </Form.Group>
         <Button block size="lg" type="submit" disabled={!validateForm()}
          onClick={() => {
+                    fetch("/newProject/" + projectName + "!" + projectID + "!" + projectDescription)
                         .then(response => 
                             response.json()
                         )
