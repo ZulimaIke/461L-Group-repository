@@ -30,6 +30,9 @@ HWSet = db.HWSet
 
 @app.route('/user/createAcc/', methods = ["POST"])
 def createAcc():
+
+    UserAndPass = db.UserAndPass
+
     requestData = json.loads(request.data)
     payload = requestData['data']
 
@@ -60,6 +63,8 @@ def createAcc():
 
 @app.route('/user/login/', methods = ["POST"])
 def login():
+    UserAndPass = db.UserAndPass
+
     requestData = json.loads(request.data)
     payload = requestData['data']
 
@@ -83,6 +88,9 @@ def login():
 
 @app.route("/newProject/<projectInfo>", methods=["GET"])
 def newProject(projectInfo: str):
+    Projects = db.Projects
+    HWSet = db.HWSet
+
     separated = projectInfo.split('!')
     projectName = separated[0]
     projectID = separated[1]
@@ -113,6 +121,8 @@ def newProject(projectInfo: str):
 
 @app.route("/getProjects/", methods=["GET"])
 def getProjects():
+    Projects = db.Projects
+    
     cursor = Projects.find({})
     list_cur = list(cursor)
     output = dumps(list_cur)
@@ -121,6 +131,9 @@ def getProjects():
 
 @app.route("/joinProject/<projectInfo>", methods=["GET"])
 def joinProject(projectInfo: str):
+    UserAndPass = db.UserAndPass
+    Projects = db.Projects
+
     projectID = projectInfo
 
     f = open("stored.txt", "r")
@@ -149,7 +162,7 @@ def joinProject(projectInfo: str):
 
 @app.route("/getHW/", methods=["GET"])
 def getHW():
-
+    HWSet = db.HWSet
 
     cursor = HWSet.find({})
     list_cur = list(cursor)
@@ -159,6 +172,10 @@ def getHW():
 
 @app.route("/checkout/<checkoutInfo>", methods=["GET"])
 def checkout(checkoutInfo: str):
+    UserAndPass = db.UserAndPass
+    Projects = db.Projects
+    HWSet = db.HWSet
+
     separated = checkoutInfo.split('_')
     hwSetName = separated[0]
     quantity = int(separated[1])
@@ -208,6 +225,10 @@ def checkout(checkoutInfo: str):
 
 @app.route("/checkin/<checkinInfo>", methods=["GET"])
 def checkin(checkinInfo: str):
+    UserAndPass = db.UserAndPass
+    Projects = db.Projects
+    HWSet = db.HWSet
+
     separated = checkinInfo.split('_')
     hwSetName = separated[0]
     quantity = int(separated[1])
@@ -257,6 +278,8 @@ def checkin(checkinInfo: str):
 
 @app.route("/getAProject/<projectInfo>", methods=["GET"])
 def getAProject(projectInfo: str):
+    Projects = db.Projects
+
     projectID = projectInfo
 
     search = Projects.find_one({"ID": projectID})
@@ -271,6 +294,8 @@ def getAProject(projectInfo: str):
 
 @app.route("/getUserInfo/", methods=["GET"])
 def getUserInfo():
+    UserAndPass = db.UserAndPass
+
     f = open("stored.txt", "r")
     projectUser = f.read()
     projectList = []
@@ -284,12 +309,7 @@ def getUserInfo():
 
     Client.close()
     return jsonify(user_data=output)    
-    
-@app.route("/")
-def index():
-    return send_from_directory(app.static_folder, "index.html")
-    
-  
+      
 @app.route('/')
 def index():
     return app.send_static_file('index.html')
