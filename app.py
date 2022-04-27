@@ -11,7 +11,7 @@ import ssl
 import HWSet
 # comment out on deployment
 from flask_cors import CORS
-from User import User   
+from user import User   
 
 # uses 'frontend' because that is where our react app is stored
 app = Flask(__name__, static_folder="frontend/build", static_url_path="/")
@@ -19,8 +19,12 @@ app = Flask(__name__, static_folder="frontend/build", static_url_path="/")
 # comment out on deployment
 CORS(app)
 mongoPass = "T32bfrH0L678xseI"
-c = MongoClient(f"mongodb+srv://2team:{mongoPass}@finalproject.njqba.mongodb.net/FinalProject?retryWrites=true&w=majority") 
-db = c.FinalProject
+# c = MongoClient(f"mongodb+srv://2team:{mongoPass}@finalproject.njqba.mongodb.net/FinalProject?retryWrites=true&w=majority") 
+# db = c.FinalProject
+Client=MongoClient("mongodb+srv://josephhuynh:Jh032001@cluster0.rtq6j.mongodb.net/HWSet?retryWrites=true&w=majority")
+db = Client.Cluster0
+UserAndPass = db.UserAndPass
+
 
 @app.route('/user/createAcc/', methods = ["POST"])
 def createAcc():
@@ -32,8 +36,8 @@ def createAcc():
 
     user = User(username, password)
 
-    collection = db.Users
-    findMatch = collection.find_one({'username': username})
+    # collection = db.Users
+    findMatch = UserAndPass.find_one({'username': username})
     if(findMatch == None):
         print("no match", flush=True)
     elif(findMatch != None):
@@ -44,7 +48,7 @@ def createAcc():
      #   return 'existing user', 400
 
     try:
-        collection.insert_one(user.dbSend())
+        UserAndPass.insert_one(user.dbSend())
     except Exception as e:
         print(e, flush = True)
         return 500
@@ -62,9 +66,9 @@ def login():
 
     user = User(username, password)
 
-    collection = db.Users
+    # collection = db.Users
 
-    findMatch = collection.find_one({'username': username})
+    findMatch = UserAndPass.find_one({'username': username})
 
     print(findMatch, flush=True)
     if (findMatch == None):
@@ -75,36 +79,237 @@ def login():
         return "invalid password"
 
 
-@app.route('/hwSet/<setData>', methods=['GET', 'POST'])
-def createHWSet(setData: str):
-    #return {'response':'Hi'}
-    # Client = MongoClient("mongodb+srv://2team:T32bfrH0L678xseI@finalproject.njqba.mongodb.net/FinalProject?retryWrites=true&w=majority")
-    # db = Client.FinalProject
-    hwSets = db.HWSets
-    data = setData.split("_")
-    entry = {
-        "Name": data[0],
-        "Capacity": data[1],
-        "Availability": data[1],
-        "Checkouts": {}
-    }
-    # hwSet0 = entry["Hardware"] + "_" + entry["Capacity"] + "_" + entry["Availability"]
-    hwSets.insert_one(entry)
-    return {'response':'success'}
+@app.route("/newProject/<projectInfo>", methods=["GET"])
+def newProject(projectInfo: str):
+    separated = projectInfo.split('!')
+    projectName = separated[0]
+    projectID = separated[1]
+    projectDescription = separated[2]
 
-@app.route('/getSets', methods=['POST', 'GET'])
-def getHWSets():
-    # return {'response':'Hi'}
-    Client = MongoClient("mongodb+srv://2team:T32bfrH0L678xseI@finalproject.njqba.mongodb.net/FinalProject?retryWrites=true&w=majority")
-    db = Client.FinalProject
-    hwSets = db.HWSets
-    existingSets = []
-    pointer = hwSets.find({})
-    for set in pointer:
-        print(set)
-        page = json.loads(json_util.dumps(set))
-        existingSets.append(page)
-    return jsonify(existingSets)
+    f = open("stored.txt", "r")
+    projectUser = f.read()
+
+    Client=MongoClient("mongodb+srv://josephhuynh:Jh032001@cluster0.rtq6j.mongodb.net/HWSet?retryWrites=true&w=majority")
+    db = Client.Cluster0
+    Projects = db.Projects
+    search = Projects.find_one({"ID": projectID})
+    if search is None:
+        newProject = {
+        "Name" : projectName,
+        "ID" : projectID,
+        "Description" : projectDescription,
+        "Users" : [projectUser],
+        "HWSets Checked Out" : 0}
+        Projects.insert_one(newProject)
+        HWSet = db.HWSet
+        HWSet.update_one({'Name': 'HWSet1'}, {'$set': {projectID: 0}})
+        HWSet.update_one({'Name': 'HWSet2'}, {'$set': {projectID: 0}})
+        Client.close()
+        output = "true"
+        return jsonify(successfullyCreated=output)
+    else:
+        Client.close()
+        output = "false"
+        return jsonify(successfullyCreated=output)
+
+@app.route("/getProjects/", methods=["GET"])
+def getProjects():
+    Client=MongoClient("mongodb+srv://josephhuynh:Jh032001@cluster0.rtq6j.mongodb.net/HWSet?retryWrites=true&w=majority")
+    db = Client.Cluster0
+    Projects = db.Projects
+    cursor = Projects.find({})
+    list_cur = list(cursor)
+    output = dumps(list_cur)
+    Client.close()
+    return jsonify(user_data=output)
+
+@app.route("/joinProject/<projectInfo>", methods=["GET"])
+def joinProject(projectInfo: str):
+    projectID = projectInfo
+
+    f = open("stored.txt", "r")
+    projectUser = f.read()
+
+    Client=MongoClient("mongodb+srv://josephhuynh:Jh032001@cluster0.rtq6j.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
+    db = Client.Cluster0
+    Projects = db.Projects
+    UserAndPass = db.UserAndPass
+    search = Projects.find_one({"ID": projectID})
+    newSearch = Projects.find_one({
+        "$and": [
+            {"ID": projectID},
+            {"Users": projectUser}
+        ]
+    })
+    if search is None:
+        Client.close()
+        output = "ID does not exist"
+        return jsonify(successfullyCreated=output)
+    else:
+        if newSearch is None:
+            Projects.update_one({'ID': projectID}, {'$push': {'Users': projectUser}})
+            UserAndPass.update_one({'Username': projectUser}, {'$push':{ "Projects": {"Name" :search["Name"], "HWSet1" : 0, "HWSet2" : 0} }})
+            output = "Successfully joined"
+        else:
+            Client.close()
+            output = "User already joined"
+        return jsonify(successfullyCreated=output)
+
+@app.route("/getHW/", methods=["GET"])
+def getHW():
+    Client=MongoClient("mongodb+srv://josephhuynh:Jh032001@cluster0.rtq6j.mongodb.net/HWSet?retryWrites=true&w=majority")
+    db = Client.Cluster0
+    HWSet = db.HWSet
+    cursor = HWSet.find({})
+    list_cur = list(cursor)
+    output = dumps(list_cur)
+    Client.close()
+    return jsonify(user_data=output)
+
+@app.route("/checkout/<checkoutInfo>", methods=["GET"])
+def checkout(checkoutInfo: str):
+    separated = checkoutInfo.split('_')
+    hwSetName = separated[0]
+    quantity = int(separated[1])
+    project = separated[2]
+
+    f = open("stored.txt", "r")
+    projectUser = f.read()
+
+    Client=MongoClient("mongodb+srv://josephhuynh:Jh032001@cluster0.rtq6j.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
+    db = Client.Cluster0
+    HWSet = db.HWSet
+    UserAndPass = db.UserAndPass
+    search = HWSet.find_one({"Name": hwSetName}, {"Availability": 1})
+    
+    if search is None:
+        Client.close()
+        output = "HWSet doesn't exist"
+        return jsonify(successfullyCreated=output)
+    else:
+        Projects = db.Projects
+        newSearch = Projects.find_one({
+        "$and": [
+            {"ID": project},
+            {"Users": projectUser}
+            ]
+        })
+        if newSearch is None:
+            output = "Join Project Before Checking Out HW"
+        else:
+            if (search["Availability"] - quantity) < 0:
+                output = "Not Enough Availability For Checkout Quantity"
+            else:
+                newAvail = search["Availability"] - quantity
+                HWSet.update_one({'Name': hwSetName}, {'$inc': {project: quantity}})
+                HWSet.update_one({'Name': hwSetName}, {'$set': {'Availability': newAvail}})
+
+                user = UserAndPass.find_one({'Username': projectUser})
+                projectList = user["Projects"]
+                for project in projectList:
+                    if project["Name"] == search["Name"]:
+                        project[hwSetName] += quantity
+                        break
+                
+                UserAndPass.update_one({'Username': projectUser}, {'$set':{ "Projects": projectList }})
+                
+                output = "Successfully Checked Out"
+                Projects = db.Projects
+                Projects.update_one({'ID' : project}, {'$inc': {'HWSets Checked Out': quantity}})
+    Client.close()
+    return jsonify(successfullyCreated=output)
+
+@app.route("/checkin/<checkinInfo>", methods=["GET"])
+def checkin(checkinInfo: str):
+    separated = checkinInfo.split('_')
+    hwSetName = separated[0]
+    quantity = int(separated[1])
+    project = separated[2]
+
+    f = open("stored.txt", "r")
+    projectUser = f.read()
+
+    Client=MongoClient("mongodb+srv://josephhuynh:Jh032001@cluster0.rtq6j.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
+    db = Client.Cluster0
+    HWSet = db.HWSet
+    UserAndPass = db.UserAndPass
+    search = HWSet.find_one({"Name": hwSetName}, {project: 1})
+    
+    if search is None:
+        Client.close()
+        output = "HWSet doesn't exist"
+        return jsonify(successfullyCreated=output)
+    else:
+        Projects = db.Projects
+        newSearch = Projects.find_one({
+        "$and": [
+            {"ID": project},
+            {"Users": projectUser}
+            ]
+        })
+        if newSearch is None:
+            output = "You Have Not Joined This Project"
+        else:
+            if (search[project] - quantity) < 0:
+                output = "Error: Checking In More Than Checked Out"
+            else:
+                avail = HWSet.find_one({"Name": hwSetName}, {"Availability": 1})
+                newAvail = avail["Availability"] + quantity
+                HWSet.update_one({'Name': hwSetName}, {'$inc': {project: (quantity * -1)}})
+                HWSet.update_one({'Name': hwSetName}, {'$set': {'Availability': newAvail}})
+                output = "Successfully Checked In"
+
+                user = UserAndPass.find_one({'Username': projectUser})
+                projectList = user["Projects"]
+                for project in projectList:
+                    if project["Name"] == search["Name"]:
+                        project[hwSetName] -= quantity
+                        break
+                
+                UserAndPass.update_one({'Username': projectUser}, {'$set':{ "Projects": projectList }})
+                Projects = db.Projects
+                Projects.update_one({'ID' : project}, {'$inc': {'HWSets Checked Out': (quantity * -1)}})
+    Client.close()
+    return jsonify(successfullyCreated=output)
+
+@app.route("/getAProject/<projectInfo>", methods=["GET"])
+def getAProject(projectInfo: str):
+    projectID = projectInfo
+    Client = MongoClient("mongodb+srv://josephhuynh:Jh032001@cluster0.rtq6j.mongodb.net/HWSet?retryWrites=true&w=majority")
+    db = Client.Cluster0
+    Projects = db.Projects
+    search = Projects.find_one({"ID": projectID})
+    
+    if search is None:
+        output = "project doesn't exist"
+    else:
+        output = search
+    Client.close()
+
+    return jsonify(project_data=output)
+
+@app.route("/getUserInfo/", methods=["GET"])
+def getUserInfo():
+    f = open("stored.txt", "r")
+    projectUser = f.read()
+    projectList = []
+    Client=MongoClient("mongodb+srv://josephhuynh:Jh032001@cluster0.rtq6j.mongodb.net/HWSet?retryWrites=true&w=majority")
+    db = Client.Cluster0
+    UserAndPass = db.UserAndPass
+    user = UserAndPass.find_one({'Username': projectUser})
+    projectList = user["Projects"]
+    output = {
+        "Name": projectUser,
+        "Projects": projectList
+    }
+
+    Client.close()
+    return jsonify(user_data=output)    
+    
+@app.route("/")
+def index():
+    return send_from_directory(app.static_folder, "index.html")
+    
   
 @app.route('/')
 def index():
