@@ -14,7 +14,7 @@ import HWSet
 from user import User   
 
 # uses 'frontend' because that is where our react app is stored
-app = Flask(__name__, static_folder="/build", static_url_path="/")
+app = Flask(__name__, static_folder="build", static_url_path="/")
 
 # comment out on deployment
 # CORS(app)
