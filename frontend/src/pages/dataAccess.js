@@ -1,19 +1,16 @@
 import React, {useMemo, useState, useEffect } from 'react';
 import {useTable} from 'react-table';
-//import user_data file
-import { Columns } from './columns';
-import './manageProject.css';
-import { Link } from "react-router-dom";
+import database from './database.json'
+import { Columns } from './columns2';
 
-export const ManageProject = () => {
+export const DataAccess = () => {
 
-    const [user_data, setData] = useState([]);
     const columns = useMemo(() => Columns, [])
-    //const data = useMemo(() => user_data, [])
+    const data = useMemo(() => database, [])
 
     const tableInstance = useTable({
         columns: columns,
-        data: user_data
+        data: data
     })
 
     const {
@@ -23,19 +20,6 @@ export const ManageProject = () => {
         rows,
         prepareRow 
     } = tableInstance
-
-    useEffect(() => {
-      fetch("/getProjects/")
-                        .then(response => 
-                            response.json()
-                        )
-                        .then(data => {
-                            setData(JSON.parse(data.user_data))
-                        })
-                        .catch(error => {
-                            console.log(error)
-                        })
-                        })
 
     return (
         <table {... getTableProps}>
@@ -65,12 +49,9 @@ export const ManageProject = () => {
                     )
                 })}                
             </tbody>
-	<li>
-          <Link to = "/postLogin">Back</Link>
-        </li>
         </table>
     )
 
 }
 
-export default ManageProject;
+export default DataAccess;

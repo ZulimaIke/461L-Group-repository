@@ -2,12 +2,29 @@ import React, { useState } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import "./createAcc.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function CreateAcc() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [createdAcc, setCreatedAcc] = useState("");
+  const navigate = useNavigate();
+
+  function userMessage(flag) {
+    if (flag == "true") {
+      alert("Account Created");
+    }
+    else {
+      alert("Failed: Username already exists");
+    }
+  }
+
+  function redirect(flag) {
+    if (flag == "true") {
+      navigate("/login/", { replace: true });
+    }
+  return false;
+  }
 
   function validateForm() {
     return username.length > 0 && password.length > 0;
@@ -40,13 +57,14 @@ export default function CreateAcc() {
         </Form.Group>
         <Button block size="lg" type="submit" disabled={!validateForm()}
          onClick={() => {
-                    fetch("http://127.0.0.1:5000/create_acc/" + username + "_" + password)
+                    fetch("/create_acc/" + username + "!" + password)
                         .then(response => 
                             response.json()
                         )
                         .then(data => {
                             setCreatedAcc(data.createdAcc)
-			    console.log(createdAcc)
+                            userMessage(data.createdAcc)
+			    redirect(data.createdAcc)
                         })
                         .catch(error => {
                             console.log(error)
