@@ -27,7 +27,7 @@ export const DisplayHWSets = () => {
     } = tableInstance
 
     useEffect(() => {
-        fetch('/getSets')
+        fetch('http://localhost:5000/getSets')
         .then(res => res.json())
         .then(data => setData(data)
         );

@@ -10,14 +10,14 @@ from bson import json_util
 import ssl
 import HWSet
 # comment out on deployment
-# from flask_cors import CORS
+from flask_cors import CORS
 from user import User   
 
 # uses 'frontend' because that is where our react app is stored
-app = Flask(__name__, static_folder="build", static_url_path="/")
+app = Flask(__name__, static_folder="frontend/build", static_url_path="/")
 
 # comment out on deployment
-# CORS(app)
+CORS(app)
 mongoPass = "T32bfrH0L678xseI"
 # c = MongoClient(f"mongodb+srv://2team:{mongoPass}@finalproject.njqba.mongodb.net/FinalProject?retryWrites=true&w=majority") 
 # db = c.FinalProject
@@ -319,4 +319,5 @@ def not_found(e):
     return app.send_static_file('index.html')
     
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=False, port=os.environ.get('PORT', 80))
+    # app.run(host='0.0.0.0', debug=False, port=os.environ.get('PORT', 80))
+    app.run(debug=True)
